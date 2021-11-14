@@ -5,15 +5,10 @@ gVimFullScreen-Mod
 * What is this
   This is a copy of Derek McLoughlin's gVimFullScreen and Yasuhiro Matsumoto's VimTweak to deal with window opacity and window FullScreen/MaximizedScreen on, off and toggle
 
-* Usage
-  See gvimfullscreen.vim
-
 * Compiling
-  Compile the gvimfullscreen.c using gcc in MSYS2 or MinGW-w64
-    MSYS2 : https://www.msys2.org/
-    MinGW-w64 : https://sourceforge.net/projects/mingw-w64/
-  Run build-gcc.cmd
-  copy gvimfullscreen32.dll, gvimfullscreen32.dll to the directory that has gvim.exe
+  Compile the DLL using any version of Visual C++ for Windows
+  Use the makefile - nmake
+  copy gvimfullscreen.dll to the directory that has gvim.exe
 
 --------------------------------------------------------------------------------
 
