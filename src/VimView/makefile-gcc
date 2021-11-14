@@ -1,0 +1,18 @@
+EXECUTABLE=VimView.exe
+
+CC=gcc.exe
+GCCWINFLAGS=-D UNICODE -D _UNICODE -municode -mwindows -Os --std=c11 -static -lgcc
+
+src = VimView.c
+
+all: resource release clean
+
+resource: VimView.rc
+	windres VimView.rc -O coff -o VimView.res
+
+release: $(src)
+	$(CC) -o $(EXECUTABLE) $^ VimView.res $(GCCWINFLAGS)
+
+.PHONY: clean
+clean:
+	del $(obj) *.res

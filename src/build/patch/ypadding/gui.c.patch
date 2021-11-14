@@ -1,0 +1,57 @@
+diff --git a/gui.c b/gui.c
+index 1edf659..0c1e016 100644
+--- a/gui.c
++++ b/gui.c
+@@ -1405,7 +1405,7 @@ gui_position_components(int total_width UNUSED)
+     if (gui.which_scrollbars[SBAR_LEFT])
+ 	text_area_x += gui.scrollbar_width;
+ 
+-    text_area_y = 0;
++    text_area_y = p_ypd;
+ #if defined(FEAT_MENU) && !(defined(FEAT_GUI_GTK) || defined(FEAT_GUI_PHOTON))
+     gui.menu_width = total_width;
+     if (gui.menu_is_active)
+@@ -1413,7 +1413,7 @@ gui_position_components(int total_width UNUSED)
+ #endif
+ #if defined(FEAT_TOOLBAR) && defined(FEAT_GUI_MSWIN)
+     if (vim_strchr(p_go, GO_TOOLBAR) != NULL)
+-	text_area_y = TOOLBAR_BUTTON_HEIGHT + TOOLBAR_BORDER_HEIGHT;
++	text_area_y = TOOLBAR_BUTTON_HEIGHT + TOOLBAR_BORDER_HEIGHT + p_ypd;
+ #endif
+ 
+ # if defined(FEAT_GUI_TABLINE) && (defined(FEAT_GUI_MSWIN) \
+@@ -1461,7 +1461,7 @@ gui_position_components(int total_width UNUSED)
+ 				  text_area_y + text_area_height
+ 					+ gui_mch_get_scrollbar_ypadding(),
+ 				  text_area_width,
+-				  gui.scrollbar_height);
++				  gui.scrollbar_height + p_ypd);
+     gui.left_sbar_x = 0;
+     gui.right_sbar_x = text_area_x + text_area_width
+ 					+ gui_mch_get_scrollbar_xpadding();
+@@ -1493,7 +1493,7 @@ gui_get_base_height(void)
+ {
+     int	    base_height;
+ 
+-    base_height = 2 * gui.border_offset;
++    base_height = 2 * gui.border_offset + p_ypd;
+     if (gui.which_scrollbars[SBAR_BOTTOM])
+ 	base_height += gui.scrollbar_height;
+ #ifdef FEAT_GUI_GTK
+@@ -4339,14 +4339,14 @@ gui_update_scrollbars(
+ 	    {
+ 		gui_mch_set_scrollbar_pos(&wp->w_scrollbars[SBAR_LEFT],
+ 					  gui.left_sbar_x, y,
+-					  gui.scrollbar_width, h);
++					  gui.scrollbar_width, h + p_ypd);
+ 		gui_do_scrollbar(wp, SBAR_LEFT, TRUE);
+ 	    }
+ 	    if (gui.which_scrollbars[SBAR_RIGHT])
+ 	    {
+ 		gui_mch_set_scrollbar_pos(&wp->w_scrollbars[SBAR_RIGHT],
+ 					  gui.right_sbar_x, y,
+-					  gui.scrollbar_width, h);
++					  gui.scrollbar_width, h + p_ypd);
+ 		gui_do_scrollbar(wp, SBAR_RIGHT, TRUE);
+ 	    }
+ 	}

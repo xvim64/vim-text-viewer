@@ -1,0 +1,12 @@
+diff --git a/option.h b/option.h
+index 89cec94..e081efb 100644
+--- a/option.h
++++ b/option.h
+@@ -493,6 +493,7 @@ EXTERN long	p_cwh;		// 'cmdwinheight'
+ EXTERN char_u	*p_cb;		// 'clipboard'
+ #endif
+ EXTERN long	p_ch;		// 'cmdheight'
++EXTERN long	p_ypd;		// 'ypadding'
+ #ifdef FEAT_FOLDING
+ EXTERN char_u	*p_cms;		// 'commentstring'
+ #endif

@@ -1,0 +1,43 @@
+--------------------------------------------------------------------------------
+
+gVimFullScreen-Mod
+                                     
+* What is this
+  This is a copy of Derek McLoughlin's gVimFullScreen and Yasuhiro Matsumoto's VimTweak to deal with window opacity and window FullScreen/MaximizedScreen on, off and toggle
+
+* Usage
+  See gvimfullscreen.vim
+
+* Compiling
+  Compile the gvimfullscreen.c using gcc in MSYS2 or MinGW-w64
+    MSYS2 : https://www.msys2.org/
+    MinGW-w64 : https://sourceforge.net/projects/mingw-w64/
+  Run build-gcc.cmd
+  copy gvimfullscreen32.dll, gvimfullscreen32.dll to the directory that has gvim.exe
+
+--------------------------------------------------------------------------------
+
+gVimWin32FullScreen
+                                     Derek McLoughlin
+
+* What is this
+  Put gvim into full screen in Microsoft Windows.
+  This is a copy of Yasuhiro Matsumoto's VimTweak's EnableMaximize
+  functionality	modified to deal with window borders and making the
+  window overlap the task bar.
+
+  Note: this works on dual monitor configurations where the primary monitor is the
+  one on the left hand side. When the gvim window spans both monitors, it is maximised 
+  to the monitor which contains most of the area of gvim's window.
+
+* Compiling
+  Compile the DLL using any version of Visual C++ for Windows
+  Use the makefile - nmake
+  copy gvimfullscreen.dll to the directory that has gvim.exe
+
+* Usage
+    Toggle
+    :call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)
+
+	For  example:
+	map <F11> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>

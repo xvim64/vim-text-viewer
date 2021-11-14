@@ -1,0 +1,24 @@
+CC =cl
+RC =rc
+CFLAGS =/MT /GS /GL /W3 /Gy /Zc:wchar_t /Gm- /O2 /Zc:inline /fp:precise /D _MBCS /D _USING_V110_SDK71_ /WX- /Zc:forScope /Gd /Oi /FC /EHsc /nologo /Fe: "bin\VimView64.exe"
+LFLAGS =/link /SUBSYSTEM:WINDOWS,5.02 /NXCOMPAT /DYNAMICBASE kernel32.lib user32.lib /OPT:REF /OPT:ICF /NOLOGO /TLBID:1
+RFLAGS =/nologo
+
+all: clean release
+release: VimView.c
+	@echo.
+	IF NOT EXIST bin MKDIR bin
+	@echo.
+	$(RC) $(RFLAGS) VimView.rc
+	$(CC) $(CFLAGS) VimView.c VimView.res $(LFLAGS) 
+
+clean:
+	del *.obj
+	del *.exp
+	del *.lib
+	del *.pdb
+	del *.ilk
+	del *.res
+
+distclean: clean
+	rmdir /s bin
