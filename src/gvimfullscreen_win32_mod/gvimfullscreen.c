@@ -18,6 +18,8 @@
 #define ALPHA_MIN 100
 #define ALPHA_MAX 255
 
+#define X_SIZE 9
+
 // ------------------------------------------------------------
 
 static int g_x  = 0;
@@ -29,7 +31,7 @@ static int g_ypd = 0;
 
 // ------------------------------------------------------------
 
-int x[9] = {0, };
+int x[X_SIZE] = {0, };
 
 // ------------------------------------------------------------
 
@@ -99,7 +101,10 @@ size_t strtoint(char *strPos) {
 
 	token = strtok_s(strPos, " ,", &context);
 	while (token) {
-		x[i++] = atoi(token);
+		if (i < X_SIZE) {
+			x[i] = atoi(token);
+		}
+		i++;
 		token = strtok_s(NULL, " ,", &context);
 	}
 	return i;
