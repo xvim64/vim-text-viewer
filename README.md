@@ -92,6 +92,8 @@ Vim 은 GB 단위의 대용량 텍스트 파일을 편집할 수 있으며 대�
 
 단축키에 대한 더 자세한 사항은 MyTXT/단축키.txt 를 참고하세요.
 
+아래 이미지를 클릭하면 단축키에 대한 동영상을 재생합니다.
+
 [![단축키+명령어+대용량파일지원](https://img.youtube.com/vi/_f6WBFvybjA/0.jpg)](https://youtu.be/_f6WBFvybjA)
 
 - 단축키
@@ -129,6 +131,8 @@ Vim 은 GB 단위의 대용량 텍스트 파일을 편집할 수 있으며 대�
 Vim 텍스트 뷰어는 Vim 이기 때문에 다른 윈도우 프로그램과 같은 설정 변경을 위한 윈도우창을 제공하지 않습니다.
 
 설정을 변경하려면 Vim 설정파일인 config/\_vimrc.txt 를 Vim 텍스트 뷰어의 편집모드나 윈도우 메모장 같은 텍스트 편집기로 열여서 수정해야합니다.
+
+아래 이미지를 클릭하면 설정 변경 동영상을 재생합니다.
 
 [![설정 변경](https://img.youtube.com/vi/3Jvz2A4xdmM/0.jpg)](https://youtu.be/3Jvz2A4xdmM)
 
@@ -268,6 +272,8 @@ Vim 텍스트 뷰어는 파일을 열 때 이전에 읽었던 마지막 위치�
 윈도우 XP, Vista, 7, 8, 10, 11
 
 윈도우 XP 에서도 잘 작동합니다.
+
+아래 이미지를 클릭하면 윈도우 XP 에서 작동하는 Vim 텍스트 뷰어의 동영상을 재생합니다. 
 
 [![XP](https://img.youtube.com/vi/AQb8VKZ5sF8/0.jpg)](https://youtu.be/AQb8VKZ5sF8)
 
