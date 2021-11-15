@@ -734,7 +734,7 @@ let s:bEditorModeOn = 0
     " 외부 편집기 실행 경로
     let s:sExternalEditor = 'C:\Windows\System32\notepad.exe'
 
-    " 편집모드로 시작시 Easy Vim 편집모드로 시작합니다.
+    " 편집모드로 시작시 Easy Vim 편집모드로 시작(1), Vim 편집모드로 시작(0)
     let s:bStartupEasyVimModeOn = 1
 
         " 편집모드에서 윈도우 일반 키바인딩을 사용하는 Easy Vim 편집모드를 F1 에 할당(1)
