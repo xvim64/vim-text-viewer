@@ -1,7 +1,7 @@
 ﻿set bomb
 set enc=utf-8
 set fenc=utf-8
-set fencs=ucs-bom,utf-8,utf-16le,cp949,cp1251,latin1
+set fencs=ucs-bom,utf-8,cp949,utf-16le,cp1251,latin1
 set nocompatible
 
 " ==============================================================================
