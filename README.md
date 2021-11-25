@@ -335,6 +335,17 @@ Vim 텍스트 뷰어는 파일을 열 때 이전에 읽었던 마지막 위치�
 - \_vimrc.txt
 
 	본래의 Vim 을 Vim 텍스트 뷰어로 변환시키는 기능을 담고 있는 Vim 텍스트 뷰어의 설정파일입니다.
+	한글 문서 작성에 적합하도록 한글에 중점을 두었습니다.
+
+- \_vimrc\_vi.txt
+
+	Vim 텍스트 뷰어의 뷰어모드를 제거한 프로그래밍에 중점을 둔 설정파일입니다.
+	소스코드 작성에 적합하도록 영문에 중점을 두었습니다.
+	vim-plug, vim-surround, rainbow, vim-signature, nerdtree, vim-airline, vim-airline-themes 등 프로그래밍에 도움을 주는 플러그인을 추가했습니다.
+
+- .vim 디렉토리
+
+	vim-plug, vim-surround, rainbow, vim-signature, nerdtree, vim-airline, vim-airline-themes 플러그인이 있는 곳입니다.
 
 - gvimfullscreen.c (gvimfullscreen32.dll, gvimfullscreen64.dll)
 
@@ -347,6 +358,10 @@ Vim 텍스트 뷰어는 파일을 열 때 이전에 읽었던 마지막 위치�
 - VimView.c, VimView.exe
 
 	\_vimrc.txt 를 설정파일로 해서 gvim.exe 를 실행합니다.
+
+- vi.c, vi.exe
+
+	\_vimrc_vi.txt 를 설정파일로 해서 gvim.exe 를 실행합니다.
 
 - gvim.exe
 
@@ -411,9 +426,9 @@ Vim 에 가변폭 폰트 지원과 상단여백을 추가했기 때문에 Vim �
 
 Vim 텍스트 뷰어는 각기 다른 라이선스를 갖는 여러 부분으로 구성되어 있습니다.
 
-Vim 텍스트 뷰어의 핵심인 \_vimrc.txt 와 Vim 텍스트 뷰어의 아이콘 파일인 VimView.ico 는 [GPL-2.0 License](https://github.com/xvim64/vim-text-viewer/blob/main/LICENSE) 라이선스를 따릅니다.
+Vim 텍스트 뷰어의 핵심인 \_vimrc.txt, \_vimrc\_vi.txt 와 Vim 텍스트 뷰어의 아이콘 파일인 VimView.ico 는 [GPL-2.0 License](https://github.com/xvim64/vim-text-viewer/blob/main/LICENSE) 라이선스를 따릅니다.
 
-Vim 텍스트 뷰어의 VimView.c, text.vim 은 Vim 텍스트 뷰어의 구성 부분이긴 하지만 라이선스를 명기할 정도는 아니어서 GPL-2.0 License 에서 제외합니다.
+Vim 텍스트 뷰어의 VimView.c, vi.c, text.vim 은 Vim 텍스트 뷰어의 구성 부분이긴 하지만 라이선스를 명기할 정도는 아니어서 GPL-2.0 License 에서 제외합니다.
 
 Vim 텍스트 뷰어에 전체화면과 투명화를 지원하기 위해 변경한 gvimfullscreen.c 는 Derek McLoughlin's [gVimFullScreen](https://github.com/derekmcloughlin/gvimfullscreen_win32#readme) 과 Yasuhiro Matsumoto (a.k.a mattn)'s [VimTweak](https://github.com/mattn/vimtweak#license) 에서 채택한 라이선스를 따릅니다.
 
@@ -495,4 +510,24 @@ Vim 텍스트 뷰어에 포함된 폰트는 Open Font License, Ubuntu Font Licen
 - [별 헤는 밤](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000761&menuNo=200019)
 - [봄 봄](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000404&menuNo=200026)
 - [서시](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000779&menuNo=200019)
+
+- [vim-plug](https://github.com/junegunn/vim-plug)
+- [vim-plug 라이센스](https://github.com/junegunn/vim-plug/blob/master/LICENSE)
+
+- [vim-surround](https://github.com/tpope/vim-surround)
+
+- [rainbow](https://github.com/luochen1990/rainbow)
+- [rainbow 라이센스](https://github.com/luochen1990/rainbow/blob/master/LICENSE)
+
+- [vim-signature](https://github.com/kshenoy/vim-signature)
+- [vim-signature 라이센스](https://github.com/kshenoy/vim-signature)
+
+- [nerdtree](https://github.com/preservim/nerdtree)
+- [nerdtree 라이센스](https://github.com/preservim/nerdtree/blob/master/LICENCE)
+
+- [vim-airline](https://github.com/vim-airline/vim-airline)
+- [vim-airline 라이센스](https://github.com/vim-airline/vim-airline/blob/master/LICENSE)
+
+- [vim-airline-themes](https://github.com/vim-airline/vim-airline-themes)
+- [vim-airline-themes 라이센스](https://github.com/vim-airline/vim-airline-themes/blob/master/LICENSE)
 

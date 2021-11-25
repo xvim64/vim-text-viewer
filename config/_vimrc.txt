@@ -1,7 +1,7 @@
 ﻿set bomb
 set enc=utf-8
 set fenc=utf-8
-set fencs=ucs-bom,utf-8,cp949,utf-16le,cp1251,latin1
+set fencs=ucs-bom,cp949,utf-8,utf-16le,cp1251,latin1
 set nocompatible
 
 " ==============================================================================
@@ -173,7 +173,7 @@ let s:bFontDiff = 0
 
     " 시작시 폰트 랜덤(1), 랜덤아님(0)
     "     [!] "s:bFontDiff = 1" 일 경우 시작시 랜덤 폰트 작동안함
-    let s:bFontRandom = 1
+    let s:bFontRandomKo = 1
 
     " F7 키 폰트 순회 랜덤(1), 증감순서대로(0)
     let s:bF7Random = 0
@@ -980,7 +980,7 @@ let s:FontScheme     = RetFontScheme()
 let s:font_solo      = s:FontScheme[s:nEnList]
 let s:font_solo_len  = len(s:font_solo)
 let s:font_solo_n_0  = s:nKoList % s:font_solo_len
-let s:font_solo_n    = s:bFontRandom ? (rand() % s:font_solo_len) : s:font_solo_n_0
+let s:font_solo_n    = s:bFontRandomKo ? (rand() % s:font_solo_len) : s:font_solo_n_0
 
 " 폰트 Diff 초기값 저장
 let s:font_diff_init = [s:nFontDiffViewerMode, s:nFontDiffEditorMode, s:nFontDiffNetrwMode]
@@ -1122,11 +1122,46 @@ fun Cwho()
     return msg
 endfun
 
+" NSplitOnly() 에 사용되는 M-F8 용 임시변수
+let s:bToggleFoldcolumn = 0
+
+" 화면분할 북마크
+let s:By = 0
+fun By()
+    let s:By = line(".")
+endfun
+fun Ry()
+    execute "normal! ".s:By."G"
+endfun
+
+let s:Bz = 0
+fun Bz()
+    let s:Bz = line(".")
+endfun
+fun Rz()
+    execute "normal! ".s:Bz."G"
+endfun
+
 " 화면 N 분할 : "뷰어->편집->뷰어" 같이 일시적으로 화면 분할만을 해제하거나 재적용할 때 사용
 fun NSplitOnly(n=s:nSplit)
     let msg = "normal! " . Cwho()
     if a:n > 1
-        let msg .= "my"
+        if s:bToggleFoldcolumn
+            let s:bToggleFoldcolumn = 0
+        else
+            if &number
+                if &foldcolumn
+                    let msg .= ":set foldcolumn=0\<CR>"
+                endif
+                if &cursorline
+                    let msg .= ":set nocursorline\<CR>"
+                endif
+                if &relativenumber
+                    let msg .= ":set norelativenumber\<CR>"
+                endif
+            endif
+        endif
+        let msg .= ":call By()\<CR>"
         for i in range(1,a:n-1)
             let msg .= "\<C-w>v"
         endfor
@@ -1135,13 +1170,13 @@ fun NSplitOnly(n=s:nSplit)
         endfor
         "let msg .= "z\<CR>"
         for i in range(1,a:n-2)
-            let msg .= "LmzH\<C-w>l'z:silent! normal! j\<CR>z\<CR>"
+            let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
         endfor
-        let msg .= "LmzH\<C-w>l'zmz:silent! normal! j\<CR>z\<CR>"
+        let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
-        let msg .= "'ymy"
+        let msg .= ":call Ry()\<CR>"
     endif
     if has("gui_running")
         if s:nMode == 0
@@ -1149,9 +1184,6 @@ fun NSplitOnly(n=s:nSplit)
         endif
     else
         let msg .= "L$"
-    endif
-    if a:n > 1
-        set nocursorline
     endif
     silent! execute msg
     if s:nMode == 1 && a:n < 2
@@ -1494,6 +1526,8 @@ fun Randomly(bFg=1,bBg=1)
     let x11  = bDark ? XXXXXX(8,15) : XXXXXX(0,3)
     let x12  = bDark ? XXXXXX(8,15) : XXXXXX(0,3)
     let x13  = bDark ? XXXXXX(8,15) : XXXXXX(0,3)
+    let x14  = bDark ? XXXXXX(8,15) : XXXXXX(0,3)
+    let x14b = bDark ? XXXXXX(0,3)  : XXXXXX(8,15)
     if a:bFg && a:bBg
         execute "hi! Normal       guifg=".c1 ." guibg=".c1b
     elseif a:bFg
@@ -1536,6 +1570,7 @@ fun Randomly(bFg=1,bBg=1)
         execute "hi! Special      guifg=".x12
         execute "hi! Title        guifg=".x13
     endif
+    execute "hi! StatusLine       guifg=".x14." guibg=".x14b
 endfun
 
 " --------------------------------------------------------------------------------
@@ -1702,14 +1737,14 @@ fun PageNext(n)
         for i in range(1,a:n-1)
             let msg .= "\<C-w>l"
         endfor
-        let msg .= "Ljkmz"
+        let msg .= "Ljk".":call Bz()\<CR>"
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
         for i in range(1,a:n-1)
-            let msg .= "'z:silent! normal! j\<CR>z\<CR>LmzH\<C-w>l"
+            let msg .= ":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>L".":call Bz()\<CR>"."H\<C-w>l"
         endfor
-        let msg .= "'zmz:silent! normal! j\<CR>z\<CR>"
+        let msg .= ":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
@@ -1740,9 +1775,9 @@ fun PagePrevious(n)
             let msg .= "z^"
         endfor
         for i in range(1,a:n-2)
-            let msg .= "LmzH\<C-w>l'z:silent! normal! j\<CR>z\<CR>"
+            let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
         endfor
-        let msg .= "LmzH\<C-w>l'zmz:silent! normal! j\<CR>z\<CR>"
+        let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
@@ -1774,9 +1809,9 @@ fun PageHomeEnd(n,bHome=1)
         endfor
         let msg .= home_or_end
         for i in range(1,a:n-2)
-            let msg .= "LmzH\<C-w>l'z:silent! normal! j\<CR>z\<CR>"
+            let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
         endfor
-        let msg .= "LmzH\<C-w>l'zmz:silent! normal! j\<CR>z\<CR>"
+        let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
@@ -1917,17 +1952,11 @@ fun KeymapNSplit(n=s:nSplit)
                 call KeymapEditNewLine()
             endif
             nnoremap <silent> <C-HOME>           gg0
-            inoremap <silent> <C-HOME>      <ESC>gg0i
             nnoremap <silent> <C-END>            G
-            inoremap <silent> <C-END>       <ESC>GA
             nnoremap <silent> <C-PAGEUP>         gg0
-            inoremap <silent> <C-PAGEUP>    <ESC>gg0i
             nnoremap <silent> <C-PAGEDOWN>       G
-            inoremap <silent> <C-PAGEDOWN>  <ESC>GA
             nnoremap <silent> <PAGEDOWN>         z+
-            inoremap <silent> <PAGEDOWN>    <ESC>z+a
             nnoremap <silent> <PAGEUP>           z^H
-            inoremap <silent> <PAGEUP>      <ESC>z^H0i
         else
             if s:nMode == 0
                 nnoremap <silent> <SPACE>        z+L$
@@ -1942,18 +1971,18 @@ fun KeymapNSplit(n=s:nSplit)
                 call KeymapEditNewLine()
             endif
             nnoremap <silent> <C-HOME>           ggL$
-            inoremap <silent> <C-HOME>      <ESC>gg0i
             nnoremap <silent> <C-END>            GL$
-            inoremap <silent> <C-END>       <ESC>GA
             nnoremap <silent> <C-PAGEUP>         ggL$
-            inoremap <silent> <C-PAGEUP>    <ESC>gg0i
             nnoremap <silent> <C-PAGEDOWN>       GL$
-            inoremap <silent> <C-PAGEDOWN>  <ESC>GA
             nnoremap <silent> <PAGEDOWN>         z+L$
-            inoremap <silent> <PAGEDOWN>    <ESC>z+a
             nnoremap <silent> <PAGEUP>           z^L$
-            inoremap <silent> <PAGEUP>      <ESC>z^H0i
         endif
+        inoremap <silent> <C-HOME>          <ESC>gg0i
+        inoremap <silent> <C-END>           <ESC>GA
+        inoremap <silent> <C-PAGEUP>        <ESC>gg0i
+        inoremap <silent> <C-PAGEDOWN>      <ESC>GA
+        inoremap <silent> <PAGEDOWN>        <ESC>z+a
+        inoremap <silent> <PAGEUP>          <ESC>z^H0i
     endif
 endfun
 
@@ -2158,8 +2187,8 @@ fun SetColo(n)
     let s:colo_solo_n = a:n % s:colo_solo_len
     let s = s:colo_solo[s:colo_solo_n]
     if s:bColoVimTheme
-        execute "noautocmd set background=" . s[2]
-        execute "noautocmd colo" s[1]
+        silent! noautocmd execute "set background=" . s[2]
+        silent! execute " colo" s[1]
         let s:ColoBg = &background
     else
         if s:bRandomly
@@ -2372,6 +2401,7 @@ fun RotateFontEn(nAdd=0)
         execute "normal! H"
     endif
     noautocmd call SelectFont(s:font_solo_n)
+    execute "normal! \<C-w>="
     call DadanOnly()
 endfun
 
@@ -2661,6 +2691,7 @@ fun F101112(n=0)
     else
         noautocmd call WinSizePreset()
     endif
+    execute "normal! \<C-w>="
     call DadanOnly()
 endfun
 
@@ -2702,7 +2733,7 @@ fun F4Quit()
     elseif &ft == "help"
         silent! bd!
     else
-        if s:nSplit > 1 && NBuffers() > 1
+        if NBuffers() > 1 && s:nSplit > 1
             call NSplit(1)
         endif
         if s:bDialog
@@ -2715,37 +2746,50 @@ endfun
 
 " 줄번호
 fun ToggleNumber()
-    if NBuffers() == 1
-        set number!
+    if NBuffers() == 1 || s:nSplit < 2
+        noautocmd set number!
+        if &number
+            silent! noautocmd set foldcolumn=0
+        else
+            if s:foldcolumn_0 && !&foldcolumn
+                silent! noautocmd execute "set foldcolumn=".s:foldcolumn_0
+            endif
+        endif
     else
         let msg = "normal! " . Cwho() . "H"
+        " 현재 상태를 파악해서 다음에 일어날 일에 대한 내용이므로 'set number!'가 이 위치에 와서는 안 됨.
         if &number
-            let msg .= ":noautocmd set foldcolumn=".s:foldcolumn_0."\<CR>"
+            let msg .= ":set foldcolumn=".s:foldcolumn_0."\<CR>"
         else
-            let msg .= ":noautocmd set foldcolumn=0\<CR>"
+            let msg .= ":set foldcolumn=0\<CR>"
         endif
         let msg .= ":set number!\<CR>"
-        silent! execute msg
+        silent! noautocmd execute msg
         call DadanOnly()
     endif
 endfun
 
 " 왼쪽 여백 + 화면 분할
 fun ToggleFoldColumn()
-    if NBuffers() == 1
+    if NBuffers() == 1 || s:nSplit < 2
         if &foldcolumn
-            set foldcolumn=0
+            noautocmd set foldcolumn=0
         else
-            execute "set foldcolumn=".s:foldcolumn_0
+            if s:foldcolumn_0 && !&foldcolumn
+                silent! noautocmd execute "set foldcolumn=".s:foldcolumn_0
+            endif
         endif
     else
         let msg = "normal! " . Cwho() . "H"
         if &foldcolumn
-            let msg .= ":noautocmd set foldcolumn=0\<CR>"
+            let msg .= ":set foldcolumn=0\<CR>"
         else
-            let msg .= ":noautocmd set foldcolumn=".s:foldcolumn_0."\<CR>"
+            if s:foldcolumn_0
+                let msg .= ":set foldcolumn=".s:foldcolumn_0."\<CR>"
+            endif
         endif
-        silent! execute msg
+        silent! noautocmd execute msg
+        let s:bToggleFoldcolumn = 1
         call DadanOnly()
     endif
 endfun
@@ -3087,32 +3131,32 @@ fun KeymapCommon()
         vnoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>
         inoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>a
 
-        " 전체, 일반 --> 전체
+        " 폰트크기
         nnoremap <silent> <F10> <ESC>:call F101112(0)<CR>
         vnoremap <silent> <F10> <ESC>:call F101112(0)<CR>
         inoremap <silent> <F10> <ESC>:call F101112(0)<CR>a
 
-        " 전체, 일반 --> 전체
+        " 폰트크기
         nnoremap <silent> <F11> <ESC>:call F101112(1)<CR>
         vnoremap <silent> <F11> <ESC>:call F101112(1)<CR>
         inoremap <silent> <F11> <ESC>:call F101112(1)<CR>a
 
-        " 전체, 일반 --> 전체
+        " 폰트크기
         nnoremap <silent> <F12> <ESC>:call F101112(2)<CR>
         vnoremap <silent> <F12> <ESC>:call F101112(2)<CR>
         inoremap <silent> <F12> <ESC>:call F101112(2)<CR>a
 
-        " 전체, 일반 --> 일반
+        " 폰트크기
         nnoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>
         vnoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>
         inoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>a
 
-        " 전체, 일반 --> 일반
+        " 폰트크기
         nnoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>
         vnoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>
         inoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>a
 
-        " 전체, 일반 --> 일반
+        " 폰트크기
         nnoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>
         vnoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>
         inoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>a
@@ -3365,6 +3409,8 @@ fun AutocmdVimEnter()
                 call GVimFullPartOn(s:nStartupFullRes)
             endif
         endif
+    else
+        call SetColoLink()
     endif
 
     if argc()
@@ -3397,7 +3443,6 @@ fun AutocmdVimEnter()
         "redraw!
         echo ""
     endif
-
 endfun
 
 "" ================================================================================

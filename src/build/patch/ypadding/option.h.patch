@@ -1,5 +1,5 @@
 diff --git a/option.h b/option.h
-index 89cec94..e081efb 100644
+index 21ee569..9bef984 100644
 --- a/option.h
 +++ b/option.h
 @@ -493,6 +493,7 @@ EXTERN long	p_cwh;		// 'cmdwinheight'

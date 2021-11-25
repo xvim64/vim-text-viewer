@@ -11,7 +11,7 @@ endif
 syn keyword  textTodo     TODO README LOG NOTICE ERROR WARNING
 syn match    textTitle    "^\s*#.*"
 syn match    textChapter  '^\c\s*\(ch\|chapter\|챕터\)\s*\d\+\>'
-syn match    textChapter  '^\c\s*[제]\?\s*\d\+\s*[장화.,|\-:]'
+syn match    textChapter  '^\c\s*[제]\?\s*\d\+\s*[장화.:]'
 syn match    textChapter  '^\c\s*\(제목\|프롤로그\|에필로그\|후기\|부록\|title\|prologue\|epilogue\|supplement\)\>'
 syn match    textComment  "^\/\/.*$"
 syn match    textComment  "\s\+\/\/.*$"

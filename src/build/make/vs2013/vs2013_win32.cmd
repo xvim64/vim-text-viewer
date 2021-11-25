@@ -16,4 +16,7 @@ set "USERDOMAIN=APPVYR-WIN"
 nmake -f Make_mvc.mak clean
 nmake -f Make_mvc.mak "DEFINES=-DFEAT_PROPORTIONAL_FONTS" WINVER=0x0501 SUBSYSTEM_VER=5.01 GUI=yes OLE=no DIRECTX=yes COLOR_EMOJI=no FEATURES=HUGE IME=yes MBYTE=yes ICONV=yes DEBUG=no CSCOPE=yes OPTIMIZE=MAXSPEED TERMINAL=yes
 
+nmake -f Make_mvc.mak clean
+nmake -f Make_mvc.mak                                     WINVER=0x0501 SUBSYSTEM_VER=5.01 GUI=no  OLE=no DIRECTX=no  COLOR_EMOJI=no FEATURES=HUGE IME=yes MBYTE=yes ICONV=yes DEBUG=no CSCOPE=yes OPTIMIZE=MAXSPEED TERMINAL=yes
+
 exit /b

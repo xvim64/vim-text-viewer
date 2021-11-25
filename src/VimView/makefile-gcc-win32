@@ -1,0 +1,17 @@
+CC=gcc.exe
+GCCWINFLAGS=-D UNICODE -D _UNICODE -municode -mwindows -Os --std=c11 -static -lgcc
+
+all: clean release
+
+release: VimView.c
+	@echo.
+	IF NOT EXIST bin32-gcc MKDIR bin32-gcc
+	@echo.
+	windres VimView.rc -O coff -o VimView.res
+	$(CC) -o "bin32-gcc\vi.exe"       vi.c       VimView.res $(GCCWINFLAGS)
+	$(CC) -o "bin32-gcc\VimView.exe"  VimView.c  VimView.res $(GCCWINFLAGS)
+
+.PHONY: clean
+clean:
+	del *.obj
+	del *.res

@@ -1,5 +1,5 @@
 diff --git a/optiondefs.h b/optiondefs.h
-index 042f055..78316d5 100644
+index d46cfad..bd6b2ba 100644
 --- a/optiondefs.h
 +++ b/optiondefs.h
 @@ -2962,6 +2962,9 @@ static struct vimoption options[] =

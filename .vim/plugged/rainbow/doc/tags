@@ -1,0 +1,8 @@
+RainbowToggle	rainbow.txt	/*RainbowToggle*
+RainbowToggleOff	rainbow.txt	/*RainbowToggleOff*
+RainbowToggleOn	rainbow.txt	/*RainbowToggleOn*
+g:rainbow_active	rainbow.txt	/*g:rainbow_active*
+g:rainbow_conf	rainbow.txt	/*g:rainbow_conf*
+rainbow	rainbow.txt	/*rainbow*
+rainbow-commands	rainbow.txt	/*rainbow-commands*
+rainbow-config	rainbow.txt	/*rainbow-config*
