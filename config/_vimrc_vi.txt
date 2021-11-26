@@ -233,9 +233,6 @@ let s:KoList = [
     " F7 키 한글 폰트 순회 랜덤(1), 증감순서대로(0)
     let s:bF7Random = 0
 
-        " 랜덤으로 시작한 한글 폰트를 리셋(SHIFT+F7)의 디폴트값으로 사용(1), 사용안함(0)
-        let s:bResetDefaultFontRandom = 0
-
 " --------------------------------------------------------------------------------
 "                                   투명화
 " --------------------------------------------------------------------------------
@@ -465,7 +462,7 @@ let s:nEnList = s:bMonoFontsRandom ? rand() % len(s:MonoFontsManual) : s:nMonoFo
 let s:EnList_len = len(s:EnList)
 
 " Vim 의 영문/한글 디폴트 폰트 설정
-let s:default_en = s:EnList[s:nEnList]
+let s:default_en = "Lucida_Console"
 let s:default_ko = "Malgun_Gothic"
 
 " --------------------------------------------------------------------------------
@@ -526,7 +523,7 @@ endfor
 " --------------------------------------------------------------------------------
 
 " 영문 초기값 저장
-let s:nEnList_0      = s:nEnList
+let s:nEnList_0      = s:nMonoFontsManual
 
 " 영문x한글 전체 폰트목록
 let s:FontScheme     = RetFontScheme()
