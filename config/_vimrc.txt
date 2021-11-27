@@ -796,7 +796,7 @@ let s:bEchoMode = 1
 let s:ColoVimScheme = [
             \[ 0,"solarized" ,"dark" ],
             \[ 1,"solarized" ,"light"],
-            \[ 2,"peachpuff" ,"dark" ],
+            \[ 2,"peachpuff" ,"light"],
             \[ 3,"evening"   ,"dark" ],
             \[ 4,"slate"     ,"dark" ],
             \[ 5,"gruvbox"   ,"dark" ],
