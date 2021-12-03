@@ -367,10 +367,10 @@ else
                 \]
 
         " 사용할 s:MonoFonts 요소 번호 (0~8)
-        let s:MonoFontsManual = [0,1]
+        let s:MonoFontsSelect = [0,1]
 
-            " 시작시 사용할 s:MonoFontsManual 요소 번호
-            let s:nMonoFontsManual = 0
+            " 시작시 사용할 s:MonoFontsSelect 요소 번호
+            let s:nMonoFontsSelect = 0
 
 endif
 
@@ -380,96 +380,96 @@ endif
 
 if s:bFontListAuto
 
-    let s:KoList = []
+    let s:KoListSelect = []
 
     if len(glob('C:\Windows\Fonts\PretendardVariable.ttf'))
-        call add(s:KoList,[1,["Pretendard_Variable",["h",16,18,25,30,35,40]]])
+        call add(s:KoListSelect,[1,["Pretendard_Variable",["h",16,18,25,30,35,40]]])
     endif
     if len(glob('C:\Windows\Fonts\malgun.ttf'))
-        call add(s:KoList,[1,["Malgun_Gothic" ,["h",14,16,21,25,31,36]]])
+        call add(s:KoListSelect,[1,["Malgun_Gothic",["h",14,16,21,25,31,36]]])
         if !exists("s:default_ko")
             let s:default_ko = "Malgun_Gothic"
         endif
     endif
     if len(glob('C:\Windows\Fonts\HANDotum.ttf'))
-        call add(s:KoList,[1,["HCR_Dotum"]])
+        call add(s:KoListSelect,[1,["HCR_Dotum"]])
     endif
     if len(glob('C:\Windows\Fonts\gulim.ttc'))
-        call add(s:KoList,[1,["DotumChe"]])
-        call add(s:KoList,[1,["GulimChe"]])
-        call add(s:KoList,[1,["BatangChe",["b",800,800,800,800,800,800]]])
-        call add(s:KoList,[1,["GungsuhChe"]])
+        call add(s:KoListSelect,[1,["DotumChe"]])
+        call add(s:KoListSelect,[1,["GulimChe"]])
+        call add(s:KoListSelect,[1,["BatangChe",["b",800,800,800,800,800,800]]])
+        call add(s:KoListSelect,[1,["GungsuhChe"]])
         if !exists("s:default_ko")
             let s:default_ko = "DotumChe"
         endif
     endif
     if len(glob('C:\Windows\Fonts\HANBatang.ttf'))
-        call add(s:KoList,[1,["HCR_Batang"]])
+        call add(s:KoListSelect,[1,["HCR_Batang"]])
     endif
     if len(glob('C:\Windows\Fonts\RIDIBatang.otf'))
-        call add(s:KoList,[1,["RIDIBatang"]])
+        call add(s:KoListSelect,[1,["RIDIBatang"]])
     endif
     if len(glob('C:\Windows\Fonts\MaruBuri-Regular.ttf'))
-        call add(s:KoList,[1,["MaruBuri_Regular"]])
+        call add(s:KoListSelect,[1,["MaruBuri_Regular"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumMyeongjo.ttf'))
-        call add(s:KoList,[1,["NanumMyeongjo"]])
+        call add(s:KoListSelect,[1,["NanumMyeongjo"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumSquareRoundR.ttf'))
-        call add(s:KoList,[1,["NanumSquareRound_Regular"]])
+        call add(s:KoListSelect,[1,["NanumSquareRound_Regular"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumGothic.ttf'))
-        call add(s:KoList,[1,["NanumGothic"]])
+        call add(s:KoListSelect,[1,["NanumGothic"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumBarunGothic.ttf'))
-        call add(s:KoList,[1,["NanumBarunGothic"]])
+        call add(s:KoListSelect,[1,["NanumBarunGothic"]])
     endif
     if len(glob('C:\Windows\Fonts\D2Coding*.ttf'))
-        call add(s:KoList,[1,["D2Coding",["h",15,18,23,27,32,37]]])
+        call add(s:KoListSelect,[1,["D2Coding",["h",15,18,23,27,32,37]]])
     endif
     if len(glob('C:\Windows\Fonts\NanumBarunpenR.ttf'))
-        call add(s:KoList,[1,["NanumBarunPen"]])
+        call add(s:KoListSelect,[1,["NanumBarunPen"]])
     endif
     if len(glob('C:\Windows\Fonts\SDSamliphopangcheTTFBasic.ttf'))
-        call add(s:KoList,[1,["Sandoll_Samliphopangche_TTF_Ba",["h",17,20,27,32,38,46]]])
+        call add(s:KoListSelect,[1,["Sandoll_Samliphopangche_TTF_Ba",["h",17,20,27,32,38,46]]])
     endif
     if len(glob('C:\Windows\Fonts\SDSamliphopangcheTTFOutline.ttf'))
-        call add(s:KoList,[1,["Sandoll_Samliphopangche_TTF_Ou",["h",15,18,23,27,32,37]]])
+        call add(s:KoListSelect,[1,["Sandoll_Samliphopangche_TTF_Ou",["h",15,18,23,27,32,37]]])
     endif
     if len(glob('C:\Windows\Fonts\Sunflower-Light.ttf'))
-        call add(s:KoList,[1,["Sunflower_Light" ,["h",15,18,24,29,34,39]]],)
+        call add(s:KoListSelect,[1,["Sunflower_Light",["h",15,18,24,29,34,39]]],)
     endif
     if len(glob('C:\Windows\Fonts\PoorStory-Regular.ttf'))
-        call add(s:KoList,[1,["Poor_Story" ,["h",16,19,25,30,35,40]]],)
+        call add(s:KoListSelect,[1,["Poor_Story",["h",16,19,25,30,35,40]]],)
     endif
     if len(glob('C:\Windows\Fonts\Gugi-Regular.ttf'))
-        call add(s:KoList,[1,["Gugi", ["h",14,17,21,26,30,35]]],)
+        call add(s:KoListSelect,[1,["Gugi",["h",14,17,21,26,30,35]]],)
     endif
     if len(glob('C:\Windows\Fonts\GowunBatang-Regular.ttf'))
-        call add(s:KoList,[1,["Gowun_Batang"]],)
+        call add(s:KoListSelect,[1,["Gowun_Batang"]],)
     endif
     if len(glob('C:\Windows\Fonts\GowunDodum-Regular.ttf'))
-        call add(s:KoList,[1,["Gowun_Dodum"]],)
+        call add(s:KoListSelect,[1,["Gowun_Dodum"]],)
     endif
     if len(glob('C:\Windows\Fonts\KNPSKkomi.otf'))
-        call add(s:KoList,[1,["KNPS_Kkomi"]],)
+        call add(s:KoListSelect,[1,["KNPS_Kkomi"]],)
     endif
     if len(glob('C:\Windows\Fonts\KNPSBandali.otf'))
-        call add(s:KoList,[1,["KNPS_Bandali"]],)
+        call add(s:KoListSelect,[1,["KNPS_Bandali"]],)
     endif
 
 else
 
     " 사용할 한글 폰트목록
     "            [ 사용(1)/사용안함(0), [한글폰트이름,["h",한글폰트수직크기s],["w",한글폰트수평크기s],["b",굵기s]] ]
-    let s:KoList = [
+    let s:KoListSelect = [
                 \[0,"------------------------------------------------------------"],
-                \[1,["Poor_Story" ,["h",16,18,25,30,35,40]]],
+                \[1,["Poor_Story",["h",16,18,25,30,35,40]]],
                 \[0,"------------------------------------------------------------"],
                 \[1,["Gowun_Dodum"]],
                 \[0,"------------------------------------------------------------"],
                 \[0,[]],
-                \[1,["Malgun_Gothic" ,["h",14,16,21,25,31,36]]],
+                \[1,["Malgun_Gothic",["h",14,16,21,25,31,36]]],
                 \[0,"------------------------------------------------------------"],
                 \[1,["HCR_Dotum"]],
                 \[0,"------------------------------------------------------------"],
@@ -486,8 +486,8 @@ else
                 \[1,["KNPS_Kkomi",["h",17,19,26,32,37,43]]],
                 \[1,["KNPS_Bandali",["h",17,19,26,32,36,43]]],
                 \[0,"------------------------------------------------------------"],
-                \[1,["Sunflower_Light" ,["h",15,17,24,29,34,39]]],
-                \[1,["Gugi", ["h",14,16,21,26,30,35]]],
+                \[1,["Sunflower_Light",["h",15,17,24,29,34,39]]],
+                \[1,["Gugi",["h",14,16,21,26,30,35]]],
                 \[0,"------------------------------------------------------------"],
                 \[1,["NanumSquareRound_Regular"]],
                 \[1,["NanumGothic"]],
@@ -521,12 +521,12 @@ else
 
 endif
 
-" 한글 폰트 번호는 s:KoList 에서 사용(1)로 되어있는 것만 앞에서 부터 카운트 합니다.
+" 한글 폰트 번호는 s:KoListSelect 에서 사용(1)로 되어있는 것만 앞에서 부터 카운트 합니다.
 " 카운트는 0 부터 시작합니다.
 
 " 각각의 모드(뷰어, 편집, 파일탐색기)에 서로 같은 한글 폰트 사용할 경우
 
-    " 시작시 사용할 한글 폰트 (s:KoList 의 요소) 번호
+    " 시작시 사용할 한글 폰트 (s:KoListSelect 의 요소) 번호
     "     [!] [1(사용), [...]] 인 것만 카운트
     let s:nKoList = 0
 
@@ -900,19 +900,28 @@ let s:sFontQuality = ["DEFAULT", "PROOF", "DRAFT", "ANTIALIASED", "NONANTIALIASE
 ""
 "" ================================================================================
 
-" 폰트 템플릿 설정
+" 영문 폰트목록 설정
 if s:bFontListAuto
     let s:EnList = s:MonoFonts
     let s:nEnList = 0
     let s:EnList_len = len(s:EnList)
 else
     let s:EnList = []
-    for i in s:MonoFontsManual
+    for i in s:MonoFontsSelect
         call add(s:EnList,s:MonoFonts[i])
     endfor
-    let s:nEnList = s:nMonoFontsManual
+    let s:nEnList = s:nMonoFontsSelect
     let s:EnList_len = len(s:EnList)
 endif
+
+" 한글 폰트목록 설정
+let s:KoList = []
+for i in s:KoListSelect
+    if i[0]
+        call add(s:KoList,i[1])
+    endif
+endfor
+let s:KoList_len = len(s:KoList)
 
 " Vim 의 영문/한글 디폴트 폰트 설정
 if s:bFontListAuto
@@ -926,46 +935,34 @@ endif
 
 " --------------------------------------------------------------------------------
 
-" [폰트 템플릿]
-"           (s:TFont_영문폰트이름, 한글폰트이름,["h",한글폰트수직크기,...],["b",한글폰트굵기,...],["w",한글폰트수평크기,...])
-fun Template(TFont,ko=s:default_ko,...)
-    let tf = deepcopy(a:TFont)
-    let p  = 8
-    let nTFont = len(a:TFont)
-    for n in range(nTFont)
-        let tf[n][p] = a:ko
-    endfor
-    for i in a:000
-        let p = -1
-        if     i[0] == "h"
-            let p = 0
-        elseif i[0] == "b"
-            let p = 4
-        elseif i[0] == "w"
-            let p = 6
-        endif
-        if p > -1
-            for n in range(nTFont)
-                let tf[n][p] = i[1+n]
-            endfor
-        endif
-    endfor
-    return tf
-endfun
+" 영문x한글 조합의 폰트목록 선택
+fun GetFontScheme(nKoIndex,nSize)
+    let En = eval("s:TFont_".s:EnList[s:nEnList])[a:nSize]
+    let Ko = s:KoList[a:nKoIndex]
+    let Ko_len = len(Ko)
 
-" 영문x한글 조합의 전체 폰트목록 생성
-fun RetFontScheme()
-    let En = []
-    for i in s:EnList
-        let Ko = []
-        for j in s:KoList
-            if j[0]
-                call add(Ko,call("Template",[eval("s:TFont_".i)]+j[1]))
+    let tf = deepcopy(En)
+    let p  = 8
+    let tf[p] = Ko[0]
+
+    if Ko_len > 1
+        for i in range(1,Ko_len-1)
+            let p = -1
+            if Ko[i][0] == "h"
+                let p = 0
+            elseif Ko[i][0] == "b"
+                let p = 4
+            elseif Ko[i][0] == "w"
+                let p = 6
+            endif
+            if p > -1
+                " [h, b, w] 다음이므로 [1+] 에 주의
+                let tf[p] = Ko[i][1+a:nSize]
             endif
         endfor
-        call add(En,Ko)
-    endfor
-    return En
+    endif
+
+    return tf
 endfun
 
 " --------------------------------------------------------------------------------
@@ -973,12 +970,8 @@ endfun
 " 영문 초기값 저장
 let s:nEnList_0      = s:nEnList
 
-" 영문x한글 전체 폰트목록
-let s:FontScheme     = RetFontScheme()
-
 " 폰트 선택
-let s:font_solo      = s:FontScheme[s:nEnList]
-let s:font_solo_len  = len(s:font_solo)
+let s:font_solo_len  = s:KoList_len
 let s:font_solo_n_0  = s:nKoList % s:font_solo_len
 let s:font_solo_n    = s:bFontRandomKo ? (rand() % s:font_solo_len) : s:font_solo_n_0
 
@@ -2306,11 +2299,11 @@ fun SetFont(h1=14,h2=11,ln=3,ypd=0,weight1=0,weight2=0,w1=0,w2=0,f1=s:default_ko
 endfun
 
 " 폰트 선택 #2
-fun SelectSoloDiffFont(nFIndex,nFSize)
-    let l:nFIndex = s:bFontDiff ? s:font_diff[s:nMode] : a:nFIndex
-    let n1 = (l:nFIndex < 0) ? (s:font_solo_len - 1) : (l:nFIndex % s:font_solo_len)
-    let n2 = a:nFSize % len(s:FontScheme[s:nEnList][n1])
-    call call("SetFont",s:FontScheme[s:nEnList][n1][n2])
+fun SelectSoloDiffFont(nKoIndex,nSize)
+    let Index = s:bFontDiff ? s:font_diff[s:nMode] : a:nKoIndex
+    let nKoIndex  = (Index < 0) ? (s:font_solo_len - 1) : (Index % s:font_solo_len)
+    let nSize     = a:nSize % len(eval("s:TFont_".s:EnList[s:nEnList]))
+    call call("SetFont", GetFontScheme(nKoIndex,nSize))
 endfun
 
 " 폰트 종류/크기, 라인스페이스 변경시 전체화면 다시 그리기
