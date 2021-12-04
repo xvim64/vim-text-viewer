@@ -538,9 +538,6 @@ let s:colo_solo_n    = s:bColoRandom ? (rand() % s:colo_solo_len) : s:colo_solo_
 
 " --------------------------------------------------------------------------------
 
-" dark, light
-let s:ColoBg = ""
-
 " 페이지 분할수
 let s:nSplit = 1
 
@@ -1139,7 +1136,6 @@ fun SetColo(n)
     let s = s:colo_solo[s:colo_solo_n]
     silent! noautocmd execute "set background=" . s[2]
     silent! execute " colo" s[1]
-    let s:ColoBg = &background
     if !s:bVertSplit
         hi! VertSplit guifg=bg guibg=bg
     endif
