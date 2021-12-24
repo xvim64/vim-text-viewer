@@ -15,6 +15,15 @@ set nocompatible
 "
 " ==============================================================================
 
+" GUI Vim
+let s:bGVim = 1
+
+if !has("gui_running")
+    let s:bGVim = 0
+endif
+
+" ==============================================================================
+
 set history=50
 set wrapmargin=0
 set laststatus=0
@@ -210,7 +219,7 @@ let s:nSplit = 1
 "                           영문 폰트 정보
 " --------------------------------------------------------------------------------
 
-" 영문 폰트 정보 : [한글폰트수직크기, 영문폰트수직크기, 줄간격, 전체화면상단여백, 두께, 한글폰트수평크기, 영문폰트수평크기, 한글폰트이름, 영문폰트이름]
+" 영문 폰트 정보 : [한글폰트수직크기, 영문폰트수직크기, 줄간격, 전체화면상단여백, 한글폰트두께, 영문폰트두께, 한글폰트수평크기, 영문폰트수평크기, 한글폰트이름, 영문폰트이름]
 let s:TFont_Lucida_Console = [
             \[14,11,11,10,100,100,0,0,"","Lucida_Console"],
             \[16,13,11,10,100,100,0,0,"","Lucida_Console"],
@@ -295,56 +304,56 @@ let s:bFontListAuto = 1
 "                           영문 폰트 구성
 " --------------------------------------------------------------------------------
 
-let s:MonoFonts = []
+let s:EnFonts = []
 
 if s:bFontListAuto
 
     " 사용할 영문 폰트를 구성합니다.
 
     if len(glob('C:\Windows\Fonts\Hack-Regular.ttf'))
-        call add(s:MonoFonts,"Hack")
+        call add(s:EnFonts,"Hack")
         if !exists("s:default_en")
             let s:default_en = "Hack"
         endif
     endif
     if len(glob('C:\Windows\Fonts\UbuntuMono-R.ttf'))
-        call add(s:MonoFonts,"Ubuntu_Mono")
+        call add(s:EnFonts,"Ubuntu_Mono")
         if !exists("s:default_en")
             let s:default_en = "Ubuntu_Mono"
         endif
     endif
     if len(glob('C:\Windows\Fonts\consola.ttf'))
-        call add(s:MonoFonts,"Consolas")
+        call add(s:EnFonts,"Consolas")
         if !exists("s:default_en")
             let s:default_en = "Consolas"
         endif
     endif
     if len(glob('C:\Windows\Fonts\D2Coding*.ttf'))
-        call add(s:MonoFonts,"D2Coding")
+        call add(s:EnFonts,"D2Coding")
         if !exists("s:default_en")
             let s:default_en = "D2Coding"
         endif
     endif
     if len(glob('C:\Windows\Fonts\FiraCode-Retina.ttf'))
-        call add(s:MonoFonts,"Fira_Code_Retina")
+        call add(s:EnFonts,"Fira_Code_Retina")
         if !exists("s:default_en")
             let s:default_en = "Fira_Code_Retina"
         endif
     endif
     if len(glob('C:\Windows\Fonts\NavaMono.ttf'))
-        call add(s:MonoFonts,"NovaMono")
+        call add(s:EnFonts,"NovaMono")
         if !exists("s:default_en")
             let s:default_en = "NovaMono"
         endif
     endif
     if 1
-        call add(s:MonoFonts,"Lucida_Console")
+        call add(s:EnFonts,"Lucida_Console")
         if !exists("s:default_en")
             let s:default_en = "Lucida_Console"
         endif
     endif
-    if index(s:MonoFonts,"Hack")+1 && index(s:MonoFonts,"Ubuntu_Mono")+1
-        call insert(s:MonoFonts,"Blend",0)
+    if index(s:EnFonts,"Hack")+1 && index(s:EnFonts,"Ubuntu_Mono")+1
+        call insert(s:EnFonts,"Blend",0)
     endif
 
 else
@@ -354,23 +363,23 @@ else
     " 영문 폰트 템플릿
     "     Blend = Hack + Ubuntu_Mono
     "
-    let s:MonoFonts = [
-                \"Blend",
-                \"JetBrains_Mono",
-                \"Hack",
-                \"Ubuntu_Mono",
-                \"NovaMono",
-                \"Fira_Code_Retina",
-                \"D2Coding",
-                \"Consolas",
-                \"Lucida_Console",
+    let s:EnFonts = [
+                \[1,"Blend"],
+                \[1,"JetBrains_Mono"],
+                \[1,"Hack"],
+                \[1,"Ubuntu_Mono"],
+                \[1,"NovaMono"],
+                \[1,"Fira_Code_Retina"],
+                \[1,"D2Coding"],
+                \[1,"Consolas"],
+                \[1,"Lucida_Console"],
                 \]
 
-        " 사용할 s:MonoFonts 요소 번호 (0~8)
-        let s:MonoFontsSelect = [0,1]
+        " 시작시 영문 폰트 랜덤(1), 직접지정(0)
+        let s:bEnFontsRandom = 1
 
-            " 시작시 사용할 s:MonoFontsSelect 요소 번호
-            let s:nMonoFontsSelect = 0
+            " 시작시 사용할 s:EnFonts 요소 번호
+            let s:nEnFonts = 0
 
 endif
 
@@ -378,91 +387,91 @@ endif
 "                           한글 폰트 구성
 " --------------------------------------------------------------------------------
 
+let s:KoFonts = []
+
 if s:bFontListAuto
 
-    let s:KoListSelect = []
-
     if len(glob('C:\Windows\Fonts\PretendardVariable.ttf'))
-        call add(s:KoListSelect,[1,["Pretendard_Variable",["h",16,18,25,30,35,40]]])
+        call add(s:KoFonts,[1,["Pretendard_Variable",["h",16,18,25,30,35,40]]])
     endif
     if len(glob('C:\Windows\Fonts\malgun.ttf'))
-        call add(s:KoListSelect,[1,["Malgun_Gothic",["h",14,16,21,25,31,36]]])
+        call add(s:KoFonts,[1,["Malgun_Gothic",["h",14,16,21,25,31,36]]])
         if !exists("s:default_ko")
             let s:default_ko = "Malgun_Gothic"
         endif
     endif
     if len(glob('C:\Windows\Fonts\HANDotum.ttf'))
-        call add(s:KoListSelect,[1,["HCR_Dotum"]])
+        call add(s:KoFonts,[1,["HCR_Dotum"]])
     endif
     if len(glob('C:\Windows\Fonts\gulim.ttc'))
-        call add(s:KoListSelect,[1,["DotumChe"]])
-        call add(s:KoListSelect,[1,["GulimChe"]])
-        call add(s:KoListSelect,[1,["BatangChe",["b",800,800,800,800,800,800]]])
-        call add(s:KoListSelect,[1,["GungsuhChe"]])
+        call add(s:KoFonts,[1,["DotumChe"]])
+        call add(s:KoFonts,[1,["GulimChe"]])
+        call add(s:KoFonts,[1,["BatangChe",["b",800,800,800,800,800,800]]])
+        call add(s:KoFonts,[1,["GungsuhChe"]])
         if !exists("s:default_ko")
             let s:default_ko = "DotumChe"
         endif
     endif
     if len(glob('C:\Windows\Fonts\HANBatang.ttf'))
-        call add(s:KoListSelect,[1,["HCR_Batang"]])
+        call add(s:KoFonts,[1,["HCR_Batang"]])
     endif
     if len(glob('C:\Windows\Fonts\RIDIBatang.otf'))
-        call add(s:KoListSelect,[1,["RIDIBatang"]])
+        call add(s:KoFonts,[1,["RIDIBatang"]])
     endif
     if len(glob('C:\Windows\Fonts\MaruBuri-Regular.ttf'))
-        call add(s:KoListSelect,[1,["MaruBuri_Regular"]])
+        call add(s:KoFonts,[1,["MaruBuri_Regular"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumMyeongjo.ttf'))
-        call add(s:KoListSelect,[1,["NanumMyeongjo"]])
+        call add(s:KoFonts,[1,["NanumMyeongjo"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumSquareRoundR.ttf'))
-        call add(s:KoListSelect,[1,["NanumSquareRound_Regular"]])
+        call add(s:KoFonts,[1,["NanumSquareRound_Regular"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumGothic.ttf'))
-        call add(s:KoListSelect,[1,["NanumGothic"]])
+        call add(s:KoFonts,[1,["NanumGothic"]])
     endif
     if len(glob('C:\Windows\Fonts\NanumBarunGothic.ttf'))
-        call add(s:KoListSelect,[1,["NanumBarunGothic"]])
+        call add(s:KoFonts,[1,["NanumBarunGothic"]])
     endif
     if len(glob('C:\Windows\Fonts\D2Coding*.ttf'))
-        call add(s:KoListSelect,[1,["D2Coding",["h",15,18,23,27,32,37]]])
+        call add(s:KoFonts,[1,["D2Coding",["h",15,18,23,27,32,37]]])
     endif
     if len(glob('C:\Windows\Fonts\NanumBarunpenR.ttf'))
-        call add(s:KoListSelect,[1,["NanumBarunPen"]])
+        call add(s:KoFonts,[1,["NanumBarunPen"]])
     endif
     if len(glob('C:\Windows\Fonts\SDSamliphopangcheTTFBasic.ttf'))
-        call add(s:KoListSelect,[1,["Sandoll_Samliphopangche_TTF_Ba",["h",17,20,27,32,38,46]]])
+        call add(s:KoFonts,[1,["Sandoll_Samliphopangche_TTF_Ba",["h",17,20,27,32,38,46]]])
     endif
     if len(glob('C:\Windows\Fonts\SDSamliphopangcheTTFOutline.ttf'))
-        call add(s:KoListSelect,[1,["Sandoll_Samliphopangche_TTF_Ou",["h",15,18,23,27,32,37]]])
+        call add(s:KoFonts,[1,["Sandoll_Samliphopangche_TTF_Ou",["h",15,18,23,27,32,37]]])
     endif
     if len(glob('C:\Windows\Fonts\Sunflower-Light.ttf'))
-        call add(s:KoListSelect,[1,["Sunflower_Light",["h",15,18,24,29,34,39]]],)
+        call add(s:KoFonts,[1,["Sunflower_Light",["h",15,18,24,29,34,39]]],)
     endif
     if len(glob('C:\Windows\Fonts\PoorStory-Regular.ttf'))
-        call add(s:KoListSelect,[1,["Poor_Story",["h",16,19,25,30,35,40]]],)
+        call add(s:KoFonts,[1,["Poor_Story",["h",16,19,25,30,35,40]]],)
     endif
     if len(glob('C:\Windows\Fonts\Gugi-Regular.ttf'))
-        call add(s:KoListSelect,[1,["Gugi",["h",14,17,21,26,30,35]]],)
+        call add(s:KoFonts,[1,["Gugi",["h",14,17,21,26,30,35]]],)
     endif
     if len(glob('C:\Windows\Fonts\GowunBatang-Regular.ttf'))
-        call add(s:KoListSelect,[1,["Gowun_Batang"]],)
+        call add(s:KoFonts,[1,["Gowun_Batang"]],)
     endif
     if len(glob('C:\Windows\Fonts\GowunDodum-Regular.ttf'))
-        call add(s:KoListSelect,[1,["Gowun_Dodum"]],)
+        call add(s:KoFonts,[1,["Gowun_Dodum"]],)
     endif
     if len(glob('C:\Windows\Fonts\KNPSKkomi.otf'))
-        call add(s:KoListSelect,[1,["KNPS_Kkomi"]],)
+        call add(s:KoFonts,[1,["KNPS_Kkomi"]],)
     endif
     if len(glob('C:\Windows\Fonts\KNPSBandali.otf'))
-        call add(s:KoListSelect,[1,["KNPS_Bandali"]],)
+        call add(s:KoFonts,[1,["KNPS_Bandali"]],)
     endif
 
 else
 
     " 사용할 한글 폰트목록
     "            [ 사용(1)/사용안함(0), [한글폰트이름,["h",한글폰트수직크기s],["w",한글폰트수평크기s],["b",굵기s]] ]
-    let s:KoListSelect = [
+    let s:KoFonts = [
                 \[0,"------------------------------------------------------------"],
                 \[1,["Poor_Story",["h",16,18,25,30,35,40]]],
                 \[0,"------------------------------------------------------------"],
@@ -521,12 +530,12 @@ else
 
 endif
 
-" 한글 폰트 번호는 s:KoListSelect 에서 사용(1)로 되어있는 것만 앞에서 부터 카운트 합니다.
+" 한글 폰트 번호는 s:KoFonts 에서 사용(1)로 되어있는 것만 앞에서 부터 카운트 합니다.
 " 카운트는 0 부터 시작합니다.
 
 " 각각의 모드(뷰어, 편집, 파일탐색기)에 서로 같은 한글 폰트 사용할 경우
 
-    " 시작시 사용할 한글 폰트 (s:KoListSelect 의 요소) 번호
+    " 시작시 사용할 한글 폰트 (s:KoFonts 의 요소) 번호
     "     [!] [1(사용), [...]] 인 것만 카운트
     let s:nKoList = 0
 
@@ -901,22 +910,25 @@ let s:sFontQuality = ["DEFAULT", "PROOF", "DRAFT", "ANTIALIASED", "NONANTIALIASE
 "" ================================================================================
 
 " 영문 폰트목록 설정
+let s:EnList_len = 0
 if s:bFontListAuto
-    let s:EnList = s:MonoFonts
+    let s:EnList = s:EnFonts
     let s:nEnList = 0
     let s:EnList_len = len(s:EnList)
 else
     let s:EnList = []
-    for i in s:MonoFontsSelect
-        call add(s:EnList,s:MonoFonts[i])
+    for i in s:EnFonts
+        if i[0]
+            call add(s:EnList,i[1])
+        endif
     endfor
-    let s:nEnList = s:nMonoFontsSelect
     let s:EnList_len = len(s:EnList)
+    let s:nEnList = s:bEnFontsRandom ? (rand() % s:EnList_len)  : s:nEnFonts
 endif
 
 " 한글 폰트목록 설정
 let s:KoList = []
-for i in s:KoListSelect
+for i in s:KoFonts
     if i[0]
         call add(s:KoList,i[1])
     endif
@@ -1035,7 +1047,7 @@ if s:bRandomly
 endif
 
 " Console 환경에서 Dialog 사용안함
-if !has("gui_running")
+if !s:bGVim
     let s:bDialog = 0
     let s:bDialogSaveOpen = 0
 endif
@@ -1081,129 +1093,6 @@ fun SetGuioptionsOff()
     if &guioptions != "egt"
         set guioptions=egt
     endif
-endfun
-
-" --------------------------------------------------------------------------------
-
-" 화면 분할시에 wrap 상태에서 편집을 위한 이동을 편하게
-fun KeymapgNavigate(n=s:nSplit)
-    if a:n > 1
-        nnoremap <silent> <HOME> g0
-        nnoremap <silent> <END>  g$
-    else
-        silent! nunmap <HOME>
-        silent! nunmap <END>
-    endif
-endfun
-
-fun NBuffers()
-    return tabpagewinnr(v:lnum, '$')
-endfun
-
-" 화면 분할을 해제
-fun Cwho()
-    let ns  = NBuffers()
-    let msg = ""
-    if ns > 1
-        if s:nMode == 0
-            for i in range(1,ns-1)
-                let msg .= "\<C-w>h"
-            endfor
-        endif
-        let msg .= "\<C-w>o"
-    endif
-    return msg
-endfun
-
-" NSplitOnly() 에 사용되는 M-F8 용 임시변수
-let s:bToggleFoldcolumn = 0
-
-" 화면분할 북마크
-let s:By = 0
-fun By()
-    let s:By = line(".")
-endfun
-fun Ry()
-    execute "normal! ".s:By."G"
-endfun
-
-let s:Bz = 0
-fun Bz()
-    let s:Bz = line(".")
-endfun
-fun Rz()
-    execute "normal! ".s:Bz."G"
-endfun
-
-" 화면 N 분할 : "뷰어->편집->뷰어" 같이 일시적으로 화면 분할만을 해제하거나 재적용할 때 사용
-fun NSplitOnly(n=s:nSplit)
-    let msg = "normal! " . Cwho()
-    if a:n > 1
-        if s:bToggleFoldcolumn
-            let s:bToggleFoldcolumn = 0
-        else
-            if &number
-                if &foldcolumn
-                    let msg .= ":set foldcolumn=0\<CR>"
-                endif
-                if &cursorline
-                    let msg .= ":set nocursorline\<CR>"
-                endif
-                if &relativenumber
-                    let msg .= ":set norelativenumber\<CR>"
-                endif
-            endif
-        endif
-        let msg .= ":call By()\<CR>"
-        for i in range(1,a:n-1)
-            let msg .= "\<C-w>v"
-        endfor
-        for i in range(1,a:n-1)
-            let msg .= "\<C-w>h"
-        endfor
-        "let msg .= "z\<CR>"
-        for i in range(1,a:n-2)
-            let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
-        endfor
-        let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
-        for i in range(1,a:n-1)
-            let msg .= "\<C-w>h"
-        endfor
-        let msg .= ":call Ry()\<CR>"
-    endif
-    if has("gui_running")
-        if s:nMode == 0
-            let msg .= "H"
-        endif
-    else
-        let msg .= "L$"
-    endif
-    silent! execute msg
-    if s:nMode == 1 && a:n < 2
-        if s:bCursorLine   && !&cursorline
-            set cursorline
-        endif
-        if s:bCursorColumn && !&cursorcolumn
-            set cursorcolumn
-        endif
-    endif
-    redraw!
-    call KeymapgNavigate(a:n)
-endfun
-
-" s:nSplit 이전 값 (F1 토글 복귀용)
-let s:nSplitPrev = s:nSplit
-
-" 화면 분할 : 화면을 분할함과 동시에 s:nSplit 값도 같이 변경 + 화면 분할 키 매핑 호출
-fun NSplit(n=s:nSplit)
-    if a:n > 1
-        let s:nSplit = a:n
-    else
-        let s:nSplit = 1
-    endif
-    let s:nSplitPrev = s:nSplit
-    call NSplitOnly(s:nSplit)
-    call KeymapNSplit(s:nSplit)
 endfun
 
 " --------------------------------------------------------------------------------
@@ -1498,7 +1387,7 @@ endfun
 
 " Normal 색상 무작위
 fun Randomly(bFg=1,bBg=1)
-    if !has("gui_running")
+    if !s:bGVim
         return
     endif
     let bDark = rand() % 2
@@ -1741,7 +1630,7 @@ fun PageNext(n)
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -1751,7 +1640,7 @@ fun PageNext(n)
         endif
     else
         let msg .= "z+"
-        if !has("gui_running")
+        if !s:bGVim
             let msg .= "L$"
         endif
     endif
@@ -1774,7 +1663,7 @@ fun PagePrevious(n)
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -1784,7 +1673,7 @@ fun PagePrevious(n)
         endif
     else
         let msg .= "z^"
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -1808,7 +1697,7 @@ fun PageHomeEnd(n,bHome=1)
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -1818,7 +1707,7 @@ fun PageHomeEnd(n,bHome=1)
         endif
     else
         let msg .= home_or_end
-        if !has("gui_running")
+        if !s:bGVim
             let msg .= "L$"
         endif
     endif
@@ -1931,7 +1820,7 @@ fun KeymapNSplit(n=s:nSplit)
         endif
         let s:nSplitState = 1
         call KeymapUnNSplit()
-        if has("gui_running")
+        if s:bGVim
             if s:nMode == 0
                 nnoremap <silent> <SPACE>        z+
                 nnoremap <silent> <CR>           z+
@@ -1989,12 +1878,6 @@ fun ViewerKeymapOn()
         call KeymapVimInputDisable()
     endif
 
-    silent! nunmap <S-CR>
-    silent! iunmap <S-CR>
-
-    silent! nunmap <C-CR>
-    silent! iunmap <C-CR>
-
     " 뷰어모드에서 저장키 봉쇄
     if s:bViewerEditEnable
         call KeymapF3Write()
@@ -2024,7 +1907,7 @@ fun EditorKeymapOn()
         call KeymapVimInputEnable()
     endif
 
-    if has("gui_running")
+    if s:bGVim
         " 저장 키맵
         call KeymapF3Write()
     else
@@ -2035,6 +1918,129 @@ fun EditorKeymapOn()
     call KeymapNSplit()
 
     call KeymapEditNewLine()
+endfun
+
+" --------------------------------------------------------------------------------
+
+" 화면 분할시에 wrap 상태에서 편집을 위한 이동을 편하게
+fun KeymapgNavigate(n=s:nSplit)
+    if a:n > 1
+        nnoremap <silent> <HOME> g0
+        nnoremap <silent> <END>  g$
+    else
+        silent! nunmap <HOME>
+        silent! nunmap <END>
+    endif
+endfun
+
+fun NBuffers()
+    return tabpagewinnr(v:lnum, '$')
+endfun
+
+" 화면 분할을 해제
+fun Cwho()
+    let ns  = NBuffers()
+    let msg = ""
+    if ns > 1
+        if s:nMode == 0
+            for i in range(1,ns-1)
+                let msg .= "\<C-w>h"
+            endfor
+        endif
+        let msg .= "\<C-w>o"
+    endif
+    return msg
+endfun
+
+" NSplitOnly() 에 사용되는 M-F8 용 임시변수
+let s:bToggleFoldcolumn = 0
+
+" 화면분할 북마크
+let s:By = 0
+fun By()
+    let s:By = line(".")
+endfun
+fun Ry()
+    execute "normal! ".s:By."G"
+endfun
+
+let s:Bz = 0
+fun Bz()
+    let s:Bz = line(".")
+endfun
+fun Rz()
+    execute "normal! ".s:Bz."G"
+endfun
+
+" 화면 N 분할 : "뷰어->편집->뷰어" 같이 일시적으로 화면 분할만을 해제하거나 재적용할 때 사용
+fun NSplitOnly(n=s:nSplit)
+    let msg = "normal! " . Cwho()
+    if a:n > 1
+        if s:bToggleFoldcolumn
+            let s:bToggleFoldcolumn = 0
+        else
+            if &number
+                if &foldcolumn
+                    let msg .= ":set foldcolumn=0\<CR>"
+                endif
+                if &cursorline
+                    let msg .= ":set nocursorline\<CR>"
+                endif
+                if &relativenumber
+                    let msg .= ":set norelativenumber\<CR>"
+                endif
+            endif
+        endif
+        let msg .= ":call By()\<CR>"
+        for i in range(1,a:n-1)
+            let msg .= "\<C-w>v"
+        endfor
+        for i in range(1,a:n-1)
+            let msg .= "\<C-w>h"
+        endfor
+        "let msg .= "z\<CR>"
+        for i in range(1,a:n-2)
+            let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
+        endfor
+        let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
+        for i in range(1,a:n-1)
+            let msg .= "\<C-w>h"
+        endfor
+        let msg .= ":call Ry()\<CR>"
+    endif
+    if s:bGVim
+        if s:nMode == 0
+            let msg .= "H"
+        endif
+    else
+        let msg .= "L$"
+    endif
+    silent! execute msg
+    if s:nMode == 1 && a:n < 2
+        if s:bCursorLine   && !&cursorline
+            set cursorline
+        endif
+        if s:bCursorColumn && !&cursorcolumn
+            set cursorcolumn
+        endif
+    endif
+    redraw!
+    call KeymapgNavigate(a:n)
+endfun
+
+" s:nSplit 이전 값 (F1 토글 복귀용)
+let s:nSplitPrev = s:nSplit
+
+" 화면 분할 : 화면을 분할함과 동시에 s:nSplit 값도 같이 변경 + 화면 분할 키 매핑 호출
+fun NSplit(n=s:nSplit)
+    if a:n > 1
+        let s:nSplit = a:n
+    else
+        let s:nSplit = 1
+    endif
+    let s:nSplitPrev = s:nSplit
+    call NSplitOnly(s:nSplit)
+    call KeymapNSplit(s:nSplit)
 endfun
 
 " --------------------------------------------------------------------------------
@@ -2070,7 +2076,7 @@ endfun
 
 " netrw 색상 변경
 fun HiNetrw()
-    if !has("gui_running") || s:bColoVimTheme
+    if !s:bGVim || s:bColoVimTheme
         return
     endif
     execute "hi! netrwDir        guifg=".XXXXXX()
@@ -2080,7 +2086,7 @@ endfun
 
 " LineNr 색상 변경
 fun HiNonText(bShow=1)
-    if !has("gui_running")
+    if !s:bGVim
         return
     endif
     if s:bColoVimTheme
@@ -2118,7 +2124,7 @@ endfun
 
 " 뷰어에 맞도록 색상테마의 일부 색상을 수정
 fun SetColoLink()
-    if has("gui_running")
+    if s:bGVim
         let x1  = XXXXXX()
         let x2  = XXXXXX(0,3)
         let x2b = XXXXXX(7,15)
@@ -2548,7 +2554,7 @@ fun SetEditorModeOn(bEasy=0)
     endif
 endfun
 
-fun AutocmdBufNewFile()
+fun AuBufNewFile()
     if s:nMode == -1
         if s:bEditorModeOn || (s:bEditFileSizeOn && getfsize(expand("%")) < s:nEditFileSize)
             call SetEditorModeOn(s:bStartupEasyVimModeOn)
@@ -3015,7 +3021,7 @@ fun KeymapCommon()
     vnoremap <silent> <F2> <ESC>:call VimExplorer()<CR>
     inoremap <silent> <F2> <ESC>:call VimExplorer()<CR>
 
-    if has("gui_running")
+    if s:bGVim
 
         if s:bEditorModeOn || s:bViewerEditEnable
             " 저장 키맵
@@ -3351,7 +3357,7 @@ fun RestorePosition()
 endfun
 
 " autocmd GUIEnter 설정
-fun AutocmdGUIEnter()
+fun AuGUIEnter()
     " 화면, 투명화 관련 GUI 설정은 GUI 가 형성된 이후인 GUIEnter 이후에 두지 않으면 무시됨
     if s:nStartupScreen == 1
         " 시작시 창의 폭, 높이 지정
@@ -3362,7 +3368,7 @@ fun AutocmdGUIEnter()
         endif
     elseif s:nStartupScreen == 2
         " 여기 GUIEneter 에서 "simalt ~x" 처리시 최대화 작동 안 함
-        " pass : AutocmdVimEnter
+        " pass : AuVimEnter
     else
         if s:bFullGUIEnter
             " s:ypd(전체화면 상단 여백) > 0 일 때 GUIEnter 에서 GVimFullOn() 처리시 화면 맨 윗부분을 클릭할 때 전체화면이 재조정되는 문제가 발생
@@ -3390,10 +3396,10 @@ fun AutocmdGUIEnter()
 endfun
 
 " autocmd VimEnter 설정
-fun AutocmdVimEnter()
-    if has("gui_running")
+fun AuVimEnter()
+    if s:bGVim
         if s:nStartupScreen == 1
-            " pass : AutocmdGUIEnter
+            " pass : AuGUIEnter
         elseif s:nStartupScreen == 2
             simalt ~x
         else
@@ -3468,7 +3474,7 @@ if 1
 
 endif
 
-if has("gui_running")
+if s:bGVim
 
     " 시작시 폰트 구성
     call SelectSoloDiffFont(s:font_solo_n,s:nFontSize)
@@ -3495,15 +3501,15 @@ if 1
     augroup vimStartup
         au!
 
-        if has("gui_running")
+        if s:bGVim
             " 시작시 사용자 시작함수 호출
-            autocmd GUIEnter * call AutocmdGUIEnter()
+            autocmd GUIEnter * call AuGUIEnter()
 
             " 새 탭 생성시 FullScreen Off
             autocmd TabNew * if s:bFullScreen | call GVimFullOff() | endif
         endif
         " 시작시 사용자 시작함수 호출
-        autocmd VimEnter * call AutocmdVimEnter()
+        autocmd VimEnter * call AuVimEnter()
 
         " 텍스트 파일 색상테마
         autocmd ColorScheme * call SetColoLink()
@@ -3514,7 +3520,7 @@ if 1
         endif
 
         " 새로운 파일 생성시 편집모드로 시작
-        autocmd BufNewFile * call AutocmdBufNewFile()
+        autocmd BufNewFile * call AuBufNewFile()
 
         " 텍스트 파일 autocmd
         autocmd BufReadPost * call SetBufAuto()

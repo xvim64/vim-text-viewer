@@ -320,13 +320,7 @@ Vim 텍스트 뷰어는 파일을 열 때 이전에 읽었던 마지막 위치�
 
 # 지원 OS
 
-윈도우 XP, Vista, 7, 8, 10, 11
-
-윈도우 XP 에서도 잘 작동합니다.
-
-아래 이미지를 클릭하면 윈도우 XP 에서 작동하는 Vim 텍스트 뷰어의 동영상을 재생합니다. 
-
-[![XP](https://img.youtube.com/vi/AQb8VKZ5sF8/0.jpg)](https://youtu.be/AQb8VKZ5sF8)
+윈도우 7, 8, 10, 11
 
 
 
@@ -365,7 +359,7 @@ Vim 텍스트 뷰어는 파일을 열 때 이전에 읽었던 마지막 위치�
 
 - gvim.exe
 
-	가변폭 한글 폰트, 상단 여백 및 Windows XP 를 지원하기 위해 Visual Studio 2013 Community Edition 에서 Vim 소스코드를 컴파일한 Vim 실행파일입니다.
+	가변폭 한글 폰트, 상단 여백을 지원하기 위해 Visual Studio 2022 Community Edition 에서 Vim 소스코드를 컴파일한 Vim 실행파일입니다.
 	VimView.exe 가 아닌 vim82/gvim.exe 를 실행할 경우 설정파일을 읽어들이지 않기 때문에 Vim 텍스트 뷰어가 아닌 본래의 Vim 으로 작동합니다.
 
 - text.vim
@@ -405,8 +399,7 @@ Vim 에 가변폭 폰트 지원과 상단여백을 추가했기 때문에 Vim �
 - 가변폭 폰트 지원 활성화
 
 	GitHub 에서 내려받은 Vim 의 src 폴더에서 상단 여백 패치를 적용후 빌드시 FEAT\_PROPORTIONAL\_FONTS 매크로를 추가합니다.
-	Visual Studio 2013 을 이용해서 빌드할 경우 src/build/make/vs2013/vs2013_x64.cmd 를 참고하세요.
-	MSYS2 에서 gcc 를 이용해 빌드할 경우 src/build/make/msys2/msys64.cmd 를 참고하세요.
+	Visual Studio 2022 을 이용해서 빌드할 경우 src/build/make/vs2022/vs2022_x64.cmd 를 참고하세요.
 
 
 
@@ -432,9 +425,10 @@ Vim 텍스트 뷰어의 VimView.c, vi.c, text.vim 은 Vim 텍스트 뷰어의 �
 
 Vim 텍스트 뷰어에 전체화면과 투명화를 지원하기 위해 변경한 gvimfullscreen.c 는 Derek McLoughlin's [gVimFullScreen](https://github.com/derekmcloughlin/gvimfullscreen_win32#readme) 과 Yasuhiro Matsumoto (a.k.a mattn)'s [VimTweak](https://github.com/mattn/vimtweak#license) 에서 채택한 라이선스를 따릅니다.
 
-VimView.c, gvimfullscreen.c 를 컴파일한 VimView.exe, gvimfullscreen.dll 및 가변폭 한글 폰트를 지원하는 gvim.exe 는 Windows XP 도 지원하기 위해 Visual Studio 2013 Community Edition 을 이용해 컴파일 되었습니다.
-
 Vim 텍스트 뷰어에 포함된 폰트는 Open Font License, Ubuntu Font License, 안심 글꼴 라이선스 등 사용 및 배포에 제약이 적은 폰트 위주로 구성하였습니다. 단 함초롬체의 경우 사용자들은 함초롬체를 자유롭게 배포할 수 있으나, 상업적인 목적으로는 배포 및 수정할 수 없습니다.
+
+- [Visual Studio 2022 Community Edition](https://visualstudio.microsoft.com/ko/)
+- [Visual Studio 2022 Community Edition 라이선스](https://visualstudio.microsoft.com/ko/license-terms/vs2022-ga-community/)
 
 - [Vim 설치파일](https://github.com/vim/vim-win32-installer/releases)
 - [Vim 소스코드](https://github.com/vim/vim)
@@ -445,9 +439,6 @@ Vim 텍스트 뷰어에 포함된 폰트는 Open Font License, Ubuntu Font Licen
 
 - [VimTweak](https://github.com/mattn/vimtweak)
 - [VimTweak 라이선스](https://github.com/mattn/vimtweak#license)
-
-- [Visual Studio 2013 Community Edition](https://visualstudio.microsoft.com/ko/vs/older-downloads/)
-- [Visual Studio 2013 Community Edition 라이선스](https://visualstudio.microsoft.com/license-terms/dn877550/)
 
 - [solarized](https://github.com/altercation/vim-colors-solarized)
 - [solarized 라이선스](https://github.com/altercation/vim-colors-solarized#license)

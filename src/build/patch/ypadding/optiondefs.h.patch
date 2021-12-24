@@ -1,11 +1,11 @@
 diff --git a/optiondefs.h b/optiondefs.h
-index 5a9a674..10f700a 100644
+index 650c622..6d224e0 100644
 --- a/optiondefs.h
 +++ b/optiondefs.h
-@@ -2937,6 +2937,9 @@ static struct vimoption options[] =
-     {"writedelay",  "wd",   P_NUM|P_VI_DEF,
- 			    (char_u *)&p_wd, PV_NONE,
- 			    {(char_u *)0L, (char_u *)0L} SCTX_INIT},
+@@ -2918,6 +2918,9 @@ static struct vimoption options[] =
+     {"xtermcodes",  NULL,   P_BOOL|P_VI_DEF,
+ 			    (char_u *)&p_xtermcodes, PV_NONE,
+ 			    {(char_u *)TRUE, (char_u *)0L} SCTX_INIT},
 +    {"ypadding",   "ypd",   P_NUM|P_VI_DEF,
 +			    (char_u *)&p_ypd, PV_NONE,
 +			    {(char_u *)0L, (char_u *)0L} SCTX_INIT},

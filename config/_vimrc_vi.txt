@@ -15,6 +15,15 @@ set nocompatible
 "
 " ==============================================================================
 
+" GUI Vim
+let s:bGVim = 1
+
+if !has("gui_running")
+    let s:bGVim = 0
+endif
+
+" ==============================================================================
+
 set history=50
 set wrapmargin=0
 set shortmess=st
@@ -69,10 +78,10 @@ set guioptions=egt
 behave xterm
 
 set laststatus=2
-set statusline=%<%f\ %y%m%r%=%{&fenc}%{&bomb?'[BOM]':''}[%{&ff}]\ \ \ %-14.(%l,%c%V%)\ %P
+set statusline=%<%f\ %y%m%r%=%{&fenc}%{&bomb?'[BOM]':''}[%{&ff}]\ \ \ %-14.(%l,%c%V%)\ %P%{'\ '}
 
 " netrw 에서 특정 파일 제외
-"let g:netrw_list_hide= '^.*\.\(mp4\|mkv\|wmv\|m4a\|mp3\|flac\|zip\|rar\|exe\|com\|dll\|xls\|xlsx\|doc\|docx\|ppt\|pptx\|ods\)$'
+let g:netrw_list_hide= '^.*\.\(mp4\|mkv\|wmv\|m4a\|mp3\|flac\|zip\|rar\|exe\|com\|dll\|xls\|xlsx\|doc\|docx\|ppt\|pptx\|ods\)$'
 "let g:netrw_hide = 1
 
 "" ================================================================================
@@ -134,7 +143,7 @@ let s:FontSize = [    0,     1,     2,
 "                           영문 폰트 정보
 " --------------------------------------------------------------------------------
 
-" 영문 폰트 정보 : [한글폰트수직크기, 영문폰트수직크기, 줄간격, 전체화면상단여백, 두께, 한글폰트수평크기, 영문폰트수평크기, 한글폰트이름, 영문폰트이름]
+" 영문 폰트 정보 : [한글폰트수직크기, 영문폰트수직크기, 줄간격, 전체화면상단여백, 한글폰트두께, 영문폰트두께, 한글폰트수평크기, 영문폰트수평크기, 한글폰트이름, 영문폰트이름]
 let s:TFont_Hack = [
             \[14,11, 4,0,100,100,0,0,"","Hack"],
             \[16,13, 4,0,100,100,0,0,"","Hack"],
@@ -177,21 +186,18 @@ let s:TFont_Blend = [
 " 영문 폰트 템플릿
 "     Blend = Hack + Ubuntu_Mono
 "
-let s:MonoFonts = [
-            \"Blend",
-            \"Hack",
-            \"JetBrains_Mono",
-            \"Ubuntu_Mono",
+let s:EnFonts = [
+            \[1,"Blend"],
+            \[0,"Hack"],
+            \[1,"JetBrains_Mono"],
+            \[0,"Ubuntu_Mono"],
             \]
 
-    " 사용할 s:MonoFonts 요소 번호 (0~8)
-    let s:MonoFontsSelect = [0,2]
-
     " 시작시 영문 폰트 랜덤(1), 직접지정(0)
-    let s:bMonoFontsRandom = 1
+    let s:bEnFontsRandom = 1
 
-        " 시작시 사용할 s:MonoFontsSelect 요소 번호
-        let s:nMonoFontsSelect = 0
+        " 시작시 사용할 s:EnFonts 요소 번호
+        let s:nEnFonts = 0
 
 " --------------------------------------------------------------------------------
 "                           한글 폰트 구성
@@ -199,7 +205,7 @@ let s:MonoFonts = [
 
 " 사용할 한글 폰트목록
 "            [ 사용(1)/사용안함(0), [한글폰트이름,["h",한글폰트수직크기s],["w",한글폰트수평크기s],["b",굵기s]] ]
-let s:KoListSelect = [
+let s:KoFonts = [
             \[0,"------------------------------------------------------------"],
             \[1,["Poor_Story",["h",16,18,20,24,27,33]]],
             \[1,["Pretendard_Variable"]],
@@ -227,7 +233,7 @@ let s:KoListSelect = [
     " 시작시 한글 폰트 랜덤(1), 랜덤아님(0)
     let s:bFontRandomKo = 1
 
-        " 시작시 사용할 한글 폰트 (s:KoListSelect 의 요소) 번호
+        " 시작시 사용할 한글 폰트 (s:KoFonts 의 요소) 번호
         "     [!] [1(사용), [...]] 인 것만 카운트
         let s:nKoList = 0
 
@@ -456,15 +462,17 @@ let s:sFontQuality = ["DEFAULT", "PROOF", "DRAFT", "ANTIALIASED", "NONANTIALIASE
 
 " 영문 폰트목록 설정
 let s:EnList = []
-for i in s:MonoFontsSelect
-    call add(s:EnList,s:MonoFonts[i])
+for i in s:EnFonts
+    if i[0]
+        call add(s:EnList,i[1])
+    endif
 endfor
-let s:nEnList = s:bMonoFontsRandom ? rand() % len(s:MonoFontsSelect) : s:nMonoFontsSelect
 let s:EnList_len = len(s:EnList)
+let s:nEnList = s:bEnFontsRandom ? (rand() % s:EnList_len)  : s:nEnFonts
 
 " 한글 폰트목록 설정
 let s:KoList = []
-for i in s:KoListSelect
+for i in s:KoFonts
     if i[0]
         call add(s:KoList,i[1])
     endif
@@ -521,7 +529,7 @@ endfor
 " --------------------------------------------------------------------------------
 
 " 영문 초기값 저장
-let s:nEnList_0      = s:nMonoFontsSelect
+let s:nEnList_0      = s:nEnFonts
 
 " 폰트 선택
 let s:font_solo_len  = s:KoList_len
@@ -605,117 +613,6 @@ fun SetGuioptionsOff()
     if &guioptions != "egt"
         set guioptions=egt
     endif
-endfun
-
-" --------------------------------------------------------------------------------
-
-" 화면 분할시에 wrap 상태에서 편집을 위한 이동을 편하게
-fun KeymapgNavigate(n=s:nSplit)
-    if a:n > 1
-        nnoremap <silent> <HOME> g0
-        nnoremap <silent> <END>  g$
-    else
-        silent! nunmap <HOME>
-        silent! nunmap <END>
-    endif
-endfun
-
-fun NBuffers()
-    return tabpagewinnr(v:lnum, '$')
-endfun
-
-" 화면 분할을 해제
-fun Cwho()
-    let ns  = NBuffers()
-    let msg = ""
-    if ns > 1
-        let msg .= "\<C-w>o"
-    endif
-    return msg
-endfun
-
-" NSplitOnly() 에 사용되는 M-F8 용 임시변수
-let s:bToggleFoldcolumn = 0
-
-" 화면분할 북마크
-let s:By = 0
-fun By()
-    let s:By = line(".")
-endfun
-fun Ry()
-    execute "normal! ".s:By."G"
-endfun
-
-let s:Bz = 0
-fun Bz()
-    let s:Bz = line(".")
-endfun
-fun Rz()
-    execute "normal! ".s:Bz."G"
-endfun
-
-" 화면 N 분할 : 일시적으로 화면 분할만을 해제하거나 재적용할 때 사용
-fun NSplitOnly(n=s:nSplit)
-    let msg = "normal! " . Cwho()
-    if a:n > 1
-        if s:bToggleFoldcolumn
-            let s:bToggleFoldcolumn = 0
-        else
-            if &number
-                if &foldcolumn
-                    let msg .= ":set foldcolumn=0\<CR>"
-                endif
-                if &cursorline
-                    let msg .= ":set nocursorline\<CR>"
-                endif
-                if &relativenumber
-                    let msg .= ":set norelativenumber\<CR>"
-                endif
-            endif
-        endif
-        let msg .= ":call By()\<CR>"
-        for i in range(1,a:n-1)
-            let msg .= "\<C-w>v"
-        endfor
-        for i in range(1,a:n-1)
-            let msg .= "\<C-w>h"
-        endfor
-        "let msg .= "z\<CR>"
-        for i in range(1,a:n-2)
-            let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
-        endfor
-        let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
-        for i in range(1,a:n-1)
-            let msg .= "\<C-w>h"
-        endfor
-        let msg .= ":call Ry()\<CR>"
-    endif
-    silent! execute msg
-    if a:n < 2
-        if s:bCursorLine   && !&cursorline
-            set cursorline
-        endif
-        if s:bCursorColumn && !&cursorcolumn
-            set cursorcolumn
-        endif
-    endif
-    redraw!
-    call KeymapgNavigate(a:n)
-endfun
-
-" s:nSplit 이전 값 (F1 토글 복귀용)
-let s:nSplitPrev = s:nSplit
-
-" 화면 분할 : 화면을 분할함과 동시에 s:nSplit 값도 같이 변경 + 화면 분할 키 매핑 호출
-fun NSplit(n=s:nSplit)
-    if a:n > 1
-        let s:nSplit = a:n
-    else
-        let s:nSplit = 1
-    endif
-    let s:nSplitPrev = s:nSplit
-    call NSplitOnly(s:nSplit)
-    call KeymapNSplit(s:nSplit)
 endfun
 
 " --------------------------------------------------------------------------------
@@ -915,7 +812,7 @@ fun PageNext(n)
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -925,7 +822,7 @@ fun PageNext(n)
         endif
     else
         let msg .= "z+"
-        if !has("gui_running")
+        if !s:bGVim
             let msg .= "L$"
         endif
     endif
@@ -948,7 +845,7 @@ fun PagePrevious(n)
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -958,7 +855,7 @@ fun PagePrevious(n)
         endif
     else
         let msg .= "z^"
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -982,7 +879,7 @@ fun PageHomeEnd(n,bHome=1)
         for i in range(1,a:n-1)
             let msg .= "\<C-w>h"
         endfor
-        if has("gui_running")
+        if s:bGVim
             let msg .= "H"
         else
             let msg .= "L$"
@@ -992,7 +889,7 @@ fun PageHomeEnd(n,bHome=1)
         endif
     else
         let msg .= home_or_end
-        if !has("gui_running")
+        if !s:bGVim
             let msg .= "L$"
         endif
     endif
@@ -1109,6 +1006,120 @@ fun KeymapNSplit(n=s:nSplit)
         call KeymapEditNewLine()
         call KeymapNextOnePage()
     endif
+endfun
+
+" --------------------------------------------------------------------------------
+
+" 화면 분할시에 wrap 상태에서 편집을 위한 이동을 편하게
+fun KeymapgNavigate(n=s:nSplit)
+    if a:n > 1
+        nnoremap <silent> <HOME> g0
+        nnoremap <silent> <END>  g$
+    else
+        silent! nunmap <HOME>
+        silent! nunmap <END>
+    endif
+endfun
+
+fun NBuffers()
+    return tabpagewinnr(v:lnum, '$')
+endfun
+
+" 화면 분할을 해제
+fun Cwho()
+    let ns  = NBuffers()
+    let msg = ""
+    if ns > 1
+        let msg .= "\<C-w>o"
+    endif
+    return msg
+endfun
+
+" NSplitOnly() 에 사용되는 M-F8 용 임시변수
+let s:bToggleFoldcolumn = 0
+
+" 화면분할 북마크
+let s:By = 0
+fun By()
+    let s:By = line(".")
+endfun
+fun Ry()
+    execute "normal! ".s:By."G"
+endfun
+
+let s:Bz = 0
+fun Bz()
+    let s:Bz = line(".")
+endfun
+fun Rz()
+    execute "normal! ".s:Bz."G"
+endfun
+
+" 화면 N 분할 : 일시적으로 화면 분할만을 해제하거나 재적용할 때 사용
+fun NSplitOnly(n=s:nSplit)
+    let msg = "normal! " . Cwho()
+    if a:n > 1
+        if s:bToggleFoldcolumn
+            let s:bToggleFoldcolumn = 0
+        else
+            if &number
+                if &foldcolumn
+                    let msg .= ":set foldcolumn=0\<CR>"
+                endif
+                if &cursorline
+                    let msg .= ":set nocursorline\<CR>"
+                endif
+                if &relativenumber
+                    let msg .= ":set norelativenumber\<CR>"
+                endif
+            endif
+        endif
+        let msg .= ":call By()\<CR>"
+        for i in range(1,a:n-1)
+            let msg .= "\<C-w>v"
+        endfor
+        for i in range(1,a:n-1)
+            let msg .= "\<C-w>h"
+        endfor
+        "let msg .= "z\<CR>"
+        for i in range(1,a:n-2)
+            let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
+        endfor
+        let msg .= "L".":call Bz()\<CR>"."H\<C-w>l".":call Rz()\<CR>".":silent! normal! j\<CR>z\<CR>"
+        for i in range(1,a:n-1)
+            let msg .= "\<C-w>h"
+        endfor
+        let msg .= ":call Ry()\<CR>"
+    endif
+    silent! execute msg
+    if a:n < 2
+        if s:bCursorLine   && !&cursorline
+            set cursorline
+        endif
+        if s:bCursorColumn && !&cursorcolumn
+            set cursorcolumn
+        endif
+        if s:bRelativeNumber && !&relativenumber
+            set relativenumber
+        endif
+    endif
+    redraw!
+    call KeymapgNavigate(a:n)
+endfun
+
+" s:nSplit 이전 값 (F1 토글 복귀용)
+let s:nSplitPrev = s:nSplit
+
+" 화면 분할 : 화면을 분할함과 동시에 s:nSplit 값도 같이 변경 + 화면 분할 키 매핑 호출
+fun NSplit(n=s:nSplit)
+    if a:n > 1
+        let s:nSplit = a:n
+    else
+        let s:nSplit = 1
+    endif
+    let s:nSplitPrev = s:nSplit
+    call NSplitOnly(s:nSplit)
+    call KeymapNSplit(s:nSplit)
 endfun
 
 " --------------------------------------------------------------------------------
@@ -1516,6 +1527,7 @@ endfun
 fun F5Run()
     let fe = tolower(expand("%:e"))
     if fe == "py" || fe == "pyw"
+        silent! update
         execute 'silent! !start cmd.exe /c ("' . $HOME . '\Python\python.exe" "'  . expand("%:p") . '" & echo. & pause >nul 2>&1)'
     endif
 endfun
@@ -1588,52 +1600,56 @@ fun KeymapCommon()
     " 실행
     nnoremap <silent> <F5> <ESC>:call F5Run()<CR>
     vnoremap <silent> <F5> <ESC>:call F5Run()<CR>
-    inoremap <silent> <F5> <ESC>:call F5Run()<CR>
+    inoremap <silent> <F5> <ESC>:call F5Run()<CR>a
 
-    " 색상테마 변경 앞으로
-    nnoremap <silent> <F6> <ESC>:call RotateColo(1)<CR>
-    vnoremap <silent> <F6> <ESC>:call RotateColo(1)<CR>
-    inoremap <silent> <F6> <ESC>:call RotateColo(1)<CR>a
+    if s:bGVim
 
-    " 색상테마 변경 뒤로
-    nnoremap <silent> <C-F6> <ESC>:call RotateColo(-1)<CR>
-    vnoremap <silent> <C-F6> <ESC>:call RotateColo(-1)<CR>
-    inoremap <silent> <C-F6> <ESC>:call RotateColo(-1)<CR>a
+        " 색상테마 변경 앞으로
+        nnoremap <silent> <F6> <ESC>:call RotateColo(1)<CR>
+        vnoremap <silent> <F6> <ESC>:call RotateColo(1)<CR>
+        inoremap <silent> <F6> <ESC>:call RotateColo(1)<CR>a
 
-    " 색상테마 리셋
-    nnoremap <silent> <S-F6> <ESC>:call ResetColo()<CR>
-    vnoremap <silent> <S-F6> <ESC>:call ResetColo()<CR>
-    inoremap <silent> <S-F6> <ESC>:call ResetColo()<CR>a
+        " 색상테마 변경 뒤로
+        nnoremap <silent> <C-F6> <ESC>:call RotateColo(-1)<CR>
+        vnoremap <silent> <C-F6> <ESC>:call RotateColo(-1)<CR>
+        inoremap <silent> <C-F6> <ESC>:call RotateColo(-1)<CR>a
 
-    " 한글 폰트 순회 또는 랜덤
-    nnoremap <silent> <F7> <ESC>:call RotateFontKo(1)<CR>
-    vnoremap <silent> <F7> <ESC>:call RotateFontKo(1)<CR>
-    inoremap <silent> <F7> <ESC>:call RotateFontKo(1)<CR>a
+        " 색상테마 리셋
+        nnoremap <silent> <S-F6> <ESC>:call ResetColo()<CR>
+        vnoremap <silent> <S-F6> <ESC>:call ResetColo()<CR>
+        inoremap <silent> <S-F6> <ESC>:call ResetColo()<CR>a
 
-    " 한글 폰트 역순회 또는 랜덤
-    nnoremap <silent> <C-F7> <ESC>:call RotateFontKo(-1)<CR>
-    vnoremap <silent> <C-F7> <ESC>:call RotateFontKo(-1)<CR>
-    inoremap <silent> <C-F7> <ESC>:call RotateFontKo(-1)<CR>a
+        " 한글 폰트 순회 또는 랜덤
+        nnoremap <silent> <F7> <ESC>:call RotateFontKo(1)<CR>
+        vnoremap <silent> <F7> <ESC>:call RotateFontKo(1)<CR>
+        inoremap <silent> <F7> <ESC>:call RotateFontKo(1)<CR>a
 
-    " 한글 폰트 리셋
-    nnoremap <silent> <S-F7> <ESC>:call ResetFontKo()<CR>
-    vnoremap <silent> <S-F7> <ESC>:call ResetFontKo()<CR>
-    inoremap <silent> <S-F7> <ESC>:call ResetFontKo()<CR>a
+        " 한글 폰트 역순회 또는 랜덤
+        nnoremap <silent> <C-F7> <ESC>:call RotateFontKo(-1)<CR>
+        vnoremap <silent> <C-F7> <ESC>:call RotateFontKo(-1)<CR>
+        inoremap <silent> <C-F7> <ESC>:call RotateFontKo(-1)<CR>a
 
-    " 영문 폰트 순회
-    nnoremap <silent> <M-F7> <ESC>:call RotateFontEn(1)<CR>
-    vnoremap <silent> <M-F7> <ESC>:call RotateFontEn(1)<CR>
-    inoremap <silent> <M-F7> <ESC>:call RotateFontEn(1)<CR>a
+        " 한글 폰트 리셋
+        nnoremap <silent> <S-F7> <ESC>:call ResetFontKo()<CR>
+        vnoremap <silent> <S-F7> <ESC>:call ResetFontKo()<CR>
+        inoremap <silent> <S-F7> <ESC>:call ResetFontKo()<CR>a
 
-    " 영문 폰트 역순회
-    nnoremap <silent> <C-M-F7> <ESC>:call RotateFontEn(-1)<CR>
-    vnoremap <silent> <C-M-F7> <ESC>:call RotateFontEn(-1)<CR>
-    inoremap <silent> <C-M-F7> <ESC>:call RotateFontEn(-1)<CR>a
+        " 영문 폰트 순회
+        nnoremap <silent> <M-F7> <ESC>:call RotateFontEn(1)<CR>
+        vnoremap <silent> <M-F7> <ESC>:call RotateFontEn(1)<CR>
+        inoremap <silent> <M-F7> <ESC>:call RotateFontEn(1)<CR>a
 
-    " 영문 폰트 리셋
-    nnoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>
-    vnoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>
-    inoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>a
+        " 영문 폰트 역순회
+        nnoremap <silent> <C-M-F7> <ESC>:call RotateFontEn(-1)<CR>
+        vnoremap <silent> <C-M-F7> <ESC>:call RotateFontEn(-1)<CR>
+        inoremap <silent> <C-M-F7> <ESC>:call RotateFontEn(-1)<CR>a
+
+        " 영문 폰트 리셋
+        nnoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>
+        vnoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>
+        inoremap <silent> <S-M-F7> <ESC>:call RotateFontEn(0)<CR>a
+
+    endif
 
     " 줄 번호
     nnoremap <silent> <F8> <ESC>:call ToggleNumber()<CR>
@@ -1660,80 +1676,94 @@ fun KeymapCommon()
     vnoremap <silent> <F9> <ESC>:nohlsearch<CR>
     inoremap <silent> <F9> <ESC>:nohlsearch<CR>a
 
-    " FullScreen Refresh
-    nnoremap <silent> <S-F9> <ESC>:call GVimFullRefresh()<CR>
-    vnoremap <silent> <S-F9> <ESC>:call GVimFullRefresh()<CR>
-    inoremap <silent> <S-F9> <ESC>:call GVimFullRefresh()<CR>a
+    if s:bGVim
 
-    " 폰트크기
-    nnoremap <silent> <F10> <ESC>:call F101112(0)<CR>
-    vnoremap <silent> <F10> <ESC>:call F101112(0)<CR>
-    inoremap <silent> <F10> <ESC>:call F101112(0)<CR>a
+        " FullScreen Refresh
+        nnoremap <silent> <S-F9> <ESC>:call GVimFullRefresh()<CR>
+        vnoremap <silent> <S-F9> <ESC>:call GVimFullRefresh()<CR>
+        inoremap <silent> <S-F9> <ESC>:call GVimFullRefresh()<CR>a
 
-    " 폰트크기
-    nnoremap <silent> <F11> <ESC>:call F101112(1)<CR>
-    vnoremap <silent> <F11> <ESC>:call F101112(1)<CR>
-    inoremap <silent> <F11> <ESC>:call F101112(1)<CR>a
+        " 커서 on/off
+        nnoremap <silent> <S-M-F9> <ESC>:call ToggleCursor()<CR>
+        vnoremap <silent> <S-M-F9> <ESC>:call ToggleCursor()<CR>
+        inoremap <silent> <S-M-F9> <ESC>:call ToggleCursor()<CR>a
 
-    " 폰트크기
-    nnoremap <silent> <F12> <ESC>:call F101112(2)<CR>
-    vnoremap <silent> <F12> <ESC>:call F101112(2)<CR>
-    inoremap <silent> <F12> <ESC>:call F101112(2)<CR>a
+        " 커서 Blink(Static) on/off
+        nnoremap <silent> <M-F9> <ESC>:call ToggleCursorBlink()<CR>
+        vnoremap <silent> <M-F9> <ESC>:call ToggleCursorBlink()<CR>
+        inoremap <silent> <M-F9> <ESC>:call ToggleCursorBlink()<CR>a
 
-    " 폰트크기
-    nnoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>
-    vnoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>
-    inoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>a
+        " 폰트크기
+        nnoremap <silent> <F10> <ESC>:call F101112(0)<CR>
+        vnoremap <silent> <F10> <ESC>:call F101112(0)<CR>
+        inoremap <silent> <F10> <ESC>:call F101112(0)<CR>a
 
-    " 폰트크기
-    nnoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>
-    vnoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>
-    inoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>a
+        " 폰트크기
+        nnoremap <silent> <F11> <ESC>:call F101112(1)<CR>
+        vnoremap <silent> <F11> <ESC>:call F101112(1)<CR>
+        inoremap <silent> <F11> <ESC>:call F101112(1)<CR>a
 
-    " 폰트크기
-    nnoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>
-    vnoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>
-    inoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>a
+        " 폰트크기
+        nnoremap <silent> <F12> <ESC>:call F101112(2)<CR>
+        vnoremap <silent> <F12> <ESC>:call F101112(2)<CR>
+        inoremap <silent> <F12> <ESC>:call F101112(2)<CR>a
 
-    " FullPart Left
-    nnoremap <silent> <S-C-F10> <ESC>:call GVimFullPartOn(11)<CR>
-    vnoremap <silent> <S-C-F10> <ESC>:call GVimFullPartOn(11)<CR>
-    inoremap <silent> <S-C-F10> <ESC>:call GVimFullPartOn(11)<CR>a
+        " 폰트크기
+        nnoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>
+        vnoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>
+        inoremap <silent> <S-F10> <ESC>:call F101112(3)<CR>a
 
-    " FullPart Center
-    nnoremap <silent> <S-C-F11> <ESC>:call GVimFullPartOn(12)<CR>
-    vnoremap <silent> <S-C-F11> <ESC>:call GVimFullPartOn(12)<CR>
-    inoremap <silent> <S-C-F11> <ESC>:call GVimFullPartOn(12)<CR>a
+        " 폰트크기
+        nnoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>
+        vnoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>
+        inoremap <silent> <S-F11> <ESC>:call F101112(4)<CR>a
 
-    " FullPart Right
-    nnoremap <silent> <S-C-F12> <ESC>:call GVimFullPartOn(13)<CR>
-    vnoremap <silent> <S-C-F12> <ESC>:call GVimFullPartOn(13)<CR>
-    inoremap <silent> <S-C-F12> <ESC>:call GVimFullPartOn(13)<CR>a
+        " 폰트크기
+        nnoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>
+        vnoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>
+        inoremap <silent> <S-F12> <ESC>:call F101112(5)<CR>a
 
-    " FullPart Up
-    nnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(14)<CR>
-    vnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(14)<CR>
-    inoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(14)<CR>a
+        " FullPart Left
+        nnoremap <silent> <S-C-F10> <ESC>:call GVimFullPartOn(11)<CR>
+        vnoremap <silent> <S-C-F10> <ESC>:call GVimFullPartOn(11)<CR>
+        inoremap <silent> <S-C-F10> <ESC>:call GVimFullPartOn(11)<CR>a
 
-    " FullPart Middle
-    nnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(15)<CR>
-    vnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(15)<CR>
-    inoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(15)<CR>a
+        " FullPart Center
+        nnoremap <silent> <S-C-F11> <ESC>:call GVimFullPartOn(12)<CR>
+        vnoremap <silent> <S-C-F11> <ESC>:call GVimFullPartOn(12)<CR>
+        inoremap <silent> <S-C-F11> <ESC>:call GVimFullPartOn(12)<CR>a
 
-    " FullPart Down
-    nnoremap <silent> <S-M-F12> <ESC>:call GVimFullPartOn(16)<CR>
-    vnoremap <silent> <S-M-F12> <ESC>:call GVimFullPartOn(16)<CR>
-    inoremap <silent> <S-M-F12> <ESC>:call GVimFullPartOn(16)<CR>a
+        " FullPart Right
+        nnoremap <silent> <S-C-F12> <ESC>:call GVimFullPartOn(13)<CR>
+        vnoremap <silent> <S-C-F12> <ESC>:call GVimFullPartOn(13)<CR>
+        inoremap <silent> <S-C-F12> <ESC>:call GVimFullPartOn(13)<CR>a
 
-    " FullScreen Toggle
-    nnoremap <silent> <M-F11> <ESC>:call GVimFullToggle()<CR>
-    vnoremap <silent> <M-F11> <ESC>:call GVimFullToggle()<CR>
-    inoremap <silent> <M-F11> <ESC>:call GVimFullToggle()<CR>a
+        " FullPart Up
+        nnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(14)<CR>
+        vnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(14)<CR>
+        inoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(14)<CR>a
 
-    " Top Toggle
-    nnoremap <silent> <C-F11> <ESC>:call GVimTopToggle()<CR>
-    vnoremap <silent> <C-F11> <ESC>:call GVimTopToggle()<CR>
-    inoremap <silent> <C-F11> <ESC>:call GVimTopToggle()<CR>a
+        " FullPart Middle
+        nnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(15)<CR>
+        vnoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(15)<CR>
+        inoremap <silent> <S-M-F10> <ESC>:call GVimFullPartOn(15)<CR>a
+
+        " FullPart Down
+        nnoremap <silent> <S-M-F12> <ESC>:call GVimFullPartOn(16)<CR>
+        vnoremap <silent> <S-M-F12> <ESC>:call GVimFullPartOn(16)<CR>
+        inoremap <silent> <S-M-F12> <ESC>:call GVimFullPartOn(16)<CR>a
+
+        " FullScreen Toggle
+        nnoremap <silent> <M-F11> <ESC>:call GVimFullToggle()<CR>
+        vnoremap <silent> <M-F11> <ESC>:call GVimFullToggle()<CR>
+        inoremap <silent> <M-F11> <ESC>:call GVimFullToggle()<CR>a
+
+        " Top Toggle
+        nnoremap <silent> <C-F11> <ESC>:call GVimTopToggle()<CR>
+        vnoremap <silent> <C-F11> <ESC>:call GVimTopToggle()<CR>
+        inoremap <silent> <C-F11> <ESC>:call GVimTopToggle()<CR>a
+
+    endif
 
     " 단어넘김 on/off
     nnoremap <silent> <M-F12> <ESC>:set wrap!<CR>
@@ -1803,7 +1833,7 @@ fun RestorePosition()
 endfun
 
 " autocmd GUIEnter 설정
-fun AutocmdGUIEnter()
+fun AuGUIEnter()
     " 화면, 투명화 관련 GUI 설정은 GUI 가 형성된 이후인 GUIEnter 이후에 두지 않으면 무시됨
     if s:nStartupScreen == 1
         " 시작시 창의 폭, 높이 지정
@@ -1814,7 +1844,7 @@ fun AutocmdGUIEnter()
         endif
     elseif s:nStartupScreen == 2
         " 여기 GUIEneter 에서 "simalt ~x" 처리시 최대화 작동 안 함
-        " pass : AutocmdVimEnter
+        " pass : AuVimEnter
     else
         if s:bFullGUIEnter
             " s:ypd(전체화면 상단 여백) > 0 일 때 GUIEnter 에서 GVimFullOn() 처리시 화면 맨 윗부분을 클릭할 때 전체화면이 재조정되는 문제가 발생
@@ -1833,10 +1863,10 @@ fun AutocmdGUIEnter()
 endfun
 
 " autocmd VimEnter 설정
-fun AutocmdVimEnter()
-    if has("gui_running")
+fun AuVimEnter()
+    if s:bGVim
         if s:nStartupScreen == 1
-            " pass : AutocmdGUIEnter
+            " pass : AuGUIEnter
         elseif s:nStartupScreen == 2
             simalt ~x
         else
@@ -1894,7 +1924,7 @@ if 1
 
 endif
 
-if has("gui_running")
+if s:bGVim
 
     " 시작시 폰트 구성
     call SelectSoloFont(s:font_solo_n,s:nFontSize)
@@ -1921,15 +1951,15 @@ if 1
     augroup vimStartup
         au!
 
-        if has("gui_running")
+        if s:bGVim
             " 시작시 사용자 시작함수 호출
-            autocmd GUIEnter * call AutocmdGUIEnter()
+            autocmd GUIEnter * call AuGUIEnter()
 
             " 새 탭 생성시 FullScreen Off
             autocmd TabNew * if s:bFullScreen | call GVimFullOff() | endif
         endif
         " 시작시 사용자 시작함수 호출
-        autocmd VimEnter * call AutocmdVimEnter()
+        autocmd VimEnter * call AuVimEnter()
 
         if s:bRestorePosition
             " 다시 열 때 커서 위치 복원
@@ -1969,7 +1999,6 @@ silent! call plug#begin('~/.vim/plugged')
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
 call plug#end()
-
 
 " airline tabline
 "let g:airline#extensions#tabline#enabled = 1
