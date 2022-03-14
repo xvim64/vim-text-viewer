@@ -1,8 +1,8 @@
 diff --git a/option.h b/option.h
-index c79eb0b..fbdfd8f 100644
+index 2116fe9..f9b3115 100644
 --- a/option.h
 +++ b/option.h
-@@ -1091,6 +1091,7 @@ EXTERN int	p_wa;		// 'writeany'
+@@ -1097,6 +1097,7 @@ EXTERN int	p_wa;		// 'writeany'
  EXTERN int	p_wb;		// 'writebackup'
  EXTERN long	p_wd;		// 'writedelay'
  EXTERN int	p_xtermcodes;	// 'xtermcodes'
