@@ -51,6 +51,9 @@ set belloff=all
 " 외부에서 파일 변경시 자동으로 다시 읽어들임
 set autoread
 
+" bufdo
+set hidden
+
 " 내부 파일탐색기(netrw)의 에러(BalloonHelp) 메시지 무시
 set noballooneval
 let g:netrw_nobeval = 1
@@ -451,6 +454,9 @@ if s:bFontListAuto
     if len(glob('C:\Windows\Fonts\PoorStory-Regular.ttf'))
         call add(s:KoFonts,[1,["Poor_Story",["h",16,19,25,30,35,40]]],)
     endif
+    if len(glob('C:\Windows\Fonts\NIXGONFONTS-M-2.0.ttf'))
+        call add(s:KoFonts,[1,["NIXGONFONTS-M_V2.0",["h",16,19,25,30,35,40]]],)
+    endif
     if len(glob('C:\Windows\Fonts\Gugi-Regular.ttf'))
         call add(s:KoFonts,[1,["Gugi",["h",14,17,21,26,30,35]]],)
     endif
@@ -474,6 +480,7 @@ else
     let s:KoFonts = [
                 \[0,"------------------------------------------------------------"],
                 \[1,["Poor_Story",["h",16,18,25,30,35,40]]],
+                \[1,["NIXGONFONTS-M_V2.0"]],
                 \[0,"------------------------------------------------------------"],
                 \[1,["Gowun_Dodum"]],
                 \[0,"------------------------------------------------------------"],
@@ -719,7 +726,7 @@ let s:nStartupScreen = 0
 " --------------------------------------------------------------------------------
 
 " 화면 왼쪽에 여백 추가, (0 이면 왼편 여백 없음)
-let s:foldcolumn_0 = 1
+let s:foldcolumn_0 = s:bGVim ? 1 : 0
 
 " 단어가 화면 경계에 걸리면 단어 전체를 다음 라인에 표시(1), 단어를 잘라서 표시함(0)
 let s:bLineBreak = 0
@@ -737,7 +744,7 @@ let s:bEditorModeOn = 0
         " 뷰어모드로 시작시 강제로 편집모드로 전환하는 파일 크기 (N 바이트 미만)
         let s:nEditFileSize = 5
 
-    " 뷰어모드에서 편집 모드로 전환시 화면 분할을 유지(1), 해제(0)
+    " 뷰어모드에서 편집 모드로 전환시 화면 분할을 해제(1), 유지(0)
     let s:bClearNSplit = 0
 
     " 외부 편집기 실행 경로
@@ -1107,6 +1114,7 @@ let s:bFullScreen = 0
 let s:bMaxmizedScreen = 0
 
 " 전체화면 상단 여백
+let s:bYpadding = 1
 let s:ypd = 0
 
 " 전체화면 영역 기본값
@@ -1141,7 +1149,7 @@ endfun
 
 " 전체화면 toggle
 fun GVimFullToggle()
-    if &ypadding != s:ypd
+    if s:bYpadding && &ypadding != s:ypd
         execute "set ypadding=" . s:ypd
     endif
     if s:bFullScreen
@@ -1161,7 +1169,7 @@ endfun
 
 " 전체화면 on or refresh
 fun GVimFullOn(sFull=s:sFull)
-    if &ypadding != s:ypd
+    if s:bYpadding && &ypadding != s:ypd
         execute "set ypadding=" . s:ypd
     endif
     if !s:bFullScreen && (s:bMenubarOn || s:bToolbarOn || s:bVertScrollbarOn)
@@ -1189,7 +1197,7 @@ endfun
 
 " 전체화면일 경우에만 Refresh
 fun GVimFullRefresh()
-    if &ypadding != s:ypd
+    if s:bYpadding && &ypadding != s:ypd
         execute "set ypadding=" . s:ypd
     endif
     if !s:bFullScreen
@@ -1467,7 +1475,6 @@ fun EasyVimModeOn()
     inoremap <C-A> <C-HOME><C-S-END>
 
     set insertmode
-    set hidden
 
     inoremap <silent> <Down> <C-R>=pumvisible() ? "\<lt>Down>" : "\<lt>C-O>gj"<CR>
     inoremap <silent> <Up>   <C-R>=pumvisible() ? "\<lt>Up>" : "\<lt>C-O>gk"<CR>
@@ -1490,7 +1497,6 @@ fun EasyVimModeOff()
     let s:bEasyVimModeOn = 0
 
     set noinsertmode
-    set nohidden
     behave xterm
 
     silent! cunmap <C-A>
@@ -1768,11 +1774,11 @@ endfun
 
 fun KeymapEditNewLine()
     " Shift+Enter로 현재줄을 밑으로
-    nnoremap <silent> <S-CR> O
-    inoremap <silent> <S-CR> O
+    nnoremap <silent> <S-CR> O<ESC>
+    inoremap <silent> <S-CR> <ESC>O
     " Ctrl+Enter로 현재줄을 위로
-    nnoremap <silent> <C-CR> o
-    inoremap <silent> <C-CR> o
+    nnoremap <silent> <C-CR> o<ESC>
+    inoremap <silent> <C-CR> <ESC>o
 endfun
 
 " Viewer, Editor, Netrw 모드 구분
@@ -1942,11 +1948,9 @@ fun Cwho()
     let ns  = NBuffers()
     let msg = ""
     if ns > 1
-        if s:nMode == 0
-            for i in range(1,ns-1)
-                let msg .= "\<C-w>h"
-            endfor
-        endif
+        for i in range(1,ns-1)
+            let msg .= "\<C-w>h"
+        endfor
         let msg .= "\<C-w>o"
     endif
     return msg
@@ -1981,13 +1985,13 @@ fun NSplitOnly(n=s:nSplit)
         else
             if &number
                 if &foldcolumn
-                    let msg .= ":set foldcolumn=0\<CR>"
+                    let msg .= ":windo set foldcolumn=0\<CR>:wincmd w\<CR>"
                 endif
                 if &cursorline
-                    let msg .= ":set nocursorline\<CR>"
+                    let msg .= ":windo set nocursorline\<CR>:wincmd w\<CR>"
                 endif
                 if &relativenumber
-                    let msg .= ":set norelativenumber\<CR>"
+                    let msg .= ":windo set norelativenumber\<CR>:wincmd w\<CR>"
                 endif
             endif
         endif
@@ -2016,12 +2020,14 @@ fun NSplitOnly(n=s:nSplit)
         let msg .= "L$"
     endif
     silent! execute msg
-    if s:nMode == 1 && a:n < 2
+    if s:nMode == 1
         if s:bCursorLine   && !&cursorline
-            set cursorline
+            windo set cursorline
+            wincmd w
         endif
         if s:bCursorColumn && !&cursorcolumn
-            set cursorcolumn
+            windo set cursorcolumn
+            wincmd w
         endif
     endif
     redraw!
@@ -2286,11 +2292,13 @@ fun SetFont(h1=14,h2=11,ln=3,ypd=0,weight1=0,weight2=0,w1=0,w2=0,f1=s:default_ko
         let s:msg_fonts[3] = a:ypd
     endif
 
-    if &ypadding != a:ypd
-        execute "set ypadding=" . a:ypd
-    endif
-    if l:bDy
-        let s:ypd = a:ypd
+    if s:bYpadding
+        if &ypadding != a:ypd
+            execute "set ypadding=" . a:ypd
+        endif
+        if l:bDy
+            let s:ypd = a:ypd
+        endif
     endif
 
     if l:bGfn
@@ -2460,13 +2468,13 @@ fun SetCursorOn()
     else
         call SetCursorStatic()
     endif
-    if NBuffers() == 1
-        if s:bCursorLine
-            set cursorline
-        endif
-        if s:bCursorColumn
-            set cursorcolumn
-        endif
+    if s:bCursorLine
+        windo set cursorline
+        wincmd w
+    endif
+    if s:bCursorColumn
+        windo set cursorcolumn
+        wincmd w
     endif
 endfun
 
@@ -2475,13 +2483,13 @@ fun SetCursorOff()
     if IsCursorOn()
         execute "set guicursor=" . s:sCursorOff
     endif
-    if NBuffers() == 1
-        if s:bCursorLine
-            set nocursorline
-        endif
-        if s:bCursorColumn
-            set nocursorcolumn
-        endif
+    if s:bCursorLine
+        windo set nocursorline
+        wincmd w
+    endif
+    if s:bCursorColumn
+        windo set nocursorcolumn
+        wincmd w
     endif
 endfun
 
@@ -2554,24 +2562,6 @@ fun SetEditorModeOn(bEasy=0)
     endif
 endfun
 
-fun AuBufNewFile()
-    if s:nMode == -1
-        if s:bEditorModeOn || (s:bEditFileSizeOn && getfsize(expand("%")) < s:nEditFileSize)
-            call SetEditorModeOn(s:bStartupEasyVimModeOn)
-        else
-            call SetViewerModeOn()
-        endif
-    elseif s:nMode == 0
-        if (s:bEditFileSizeOn && getfsize(expand("%")) < s:nEditFileSize)
-            call SetEditorModeOn(s:bEasyVimModeOn)
-        else
-            call SetViewerModeOn()
-        endif
-    else
-        call SetEditorModeOn()
-    endif
-endfun
-
 " 뷰어 모드 on (편집 모드 off)
 fun SetViewerModeOn()
     if s:nMode == 0
@@ -2619,13 +2609,19 @@ fun ToggleEditorViewer(bEasy=0)
     else
         if a:bEasy
             if s:bEasyVimModeOn
-                if s:bClearNSplit && s:nSplitPrev != s:nSplit
+                if s:nSplit > 1 && (&cursorline || &cursorcolumn)
+                    call NSplitOnly(1)
                     if &cursorline
-                        set nocursorline
+                        windo set nocursorline
+                        wincmd w
                     endif
                     if &cursorcolumn
-                        set nocursorcolumn
+                        windo set nocursorcolumn
+                        wincmd w
                     endif
+                    call NSplitOnly(s:nSplit)
+                endif
+                if s:bClearNSplit && s:nSplitPrev != s:nSplit
                     " call NSplit() 사용시 KeymapNsplit() 을 2 번 호출하므로 NSplit() 에서 KeymapNsplit() 을 제외한 부분만 사용함
                     call NSplitOnly(s:nSplitPrev)
                     let s:nSplit = s:nSplitPrev
@@ -2641,13 +2637,19 @@ fun ToggleEditorViewer(bEasy=0)
             if s:bEasyVimModeOn
                 call EasyVimModeOff()
             else
-                if s:bClearNSplit && s:nSplitPrev != s:nSplit
+                if s:nSplit > 1 && (&cursorline || &cursorcolumn)
+                    call NSplitOnly(1)
                     if &cursorline
-                        set nocursorline
+                        windo set nocursorline
+                        wincmd w
                     endif
                     if &cursorcolumn
-                        set nocursorcolumn
+                        windo set nocursorcolumn
+                        wincmd w
                     endif
+                    call NSplitOnly(s:nSplit)
+                endif
+                if s:bClearNSplit && s:nSplitPrev != s:nSplit
                     " call NSplit() 사용시 KeymapNsplit() 을 2 번 호출하므로 NSplit() 에서 KeymapNsplit() 을 제외한 부분만 사용함
                     call NSplitOnly(s:nSplitPrev)
                     let s:nSplit = s:nSplitPrev
@@ -2663,6 +2665,24 @@ fun ToggleEditorViewer(bEasy=0)
     endif
 endfun
 
+fun AuBufNewFile()
+    if s:nMode == -1
+        if s:bEditorModeOn || (s:bEditFileSizeOn && getfsize(expand("%")) < s:nEditFileSize)
+            call SetEditorModeOn(s:bStartupEasyVimModeOn)
+        else
+            call SetViewerModeOn()
+        endif
+    elseif s:nMode == 0
+        if (s:bEditFileSizeOn && getfsize(expand("%")) < s:nEditFileSize)
+            call SetEditorModeOn(s:bEasyVimModeOn)
+        else
+            call SetViewerModeOn()
+        endif
+    else
+        call SetEditorModeOn()
+    endif
+endfun
+
 " --------------------------------------------------------------------------------
 
 fun WinSizePreset()
@@ -2675,7 +2695,7 @@ fun WinSizePreset()
     endif
 endfun
 
-" 전체 <--> 전체, 일반 <--> 일반
+" 폰트 크기 설정
 fun F101112(n=0)
     let nState = GVimState()
     let s:nFontSize = s:FontSize[a:n]
@@ -3250,14 +3270,14 @@ fun KeymapCommon()
     inoremap <silent> <M-F8> <ESC>:call ToggleFoldColumn()<CR>a
 
     " cursorline on/off
-    nnoremap <silent> <S-F8> <ESC>:set cursorline!<CR>
-    vnoremap <silent> <S-F8> <ESC>:set cursorline!<CR>
-    inoremap <silent> <S-F8> <ESC>:set cursorline!<CR>a
+    nnoremap <silent> <S-F8> <ESC>:windo set cursorline!<CR>:wincmd w<CR>
+    vnoremap <silent> <S-F8> <ESC>:windo set cursorline!<CR>:wincmd w<CR>
+    inoremap <silent> <S-F8> <ESC>:windo set cursorline!<CR>:wincmd w<CR>a
 
     " cursorcolumn on/off
-    nnoremap <silent> <C-F8> <ESC>:set cursorcolumn!<CR>
-    vnoremap <silent> <C-F8> <ESC>:set cursorcolumn!<CR>
-    inoremap <silent> <C-F8> <ESC>:set cursorcolumn!<CR>a
+    nnoremap <silent> <C-F8> <ESC>:windo set cursorcolumn!<CR>:wincmd w<CR>
+    vnoremap <silent> <C-F8> <ESC>:windo set cursorcolumn!<CR>:wincmd w<CR>
+    inoremap <silent> <C-F8> <ESC>:windo set cursorcolumn!<CR>:wincmd w<CR>a
 
     " 북마크 저장
     nnoremap <silent> <S-C-F8> <ESC>:call BookmarkSave()<CR>
@@ -3523,7 +3543,7 @@ if 1
         autocmd BufNewFile * call AuBufNewFile()
 
         " 텍스트 파일 autocmd
-        autocmd BufReadPost * call SetBufAuto()
+        autocmd BufEnter * call SetBufAuto()
         autocmd BufWinLeave * if &ft == "text" && s:nMode == 0 | execute "normal! H" | endif
         autocmd FileType netrw call SetNetrwModeOn()
 

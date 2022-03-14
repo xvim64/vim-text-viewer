@@ -71,18 +71,23 @@ set lz
 set splitright
 set splitbelow
 
+" 탭 : 0:never, 1:2tabs, 2:always
+if s:bGVim
+    set showtabline=0
+endif
+
 " guioptions 설정
 set guioptions=egt
 
 " 마우스 작동 방식
 behave xterm
 
-set laststatus=2
-set statusline=%<%f\ %y%m%r%=%{&fenc}%{&bomb?'[BOM]':''}[%{&ff}]\ \ \ %-14.(%l,%c%V%)\ %P%{'\ '}
-
 " netrw 에서 특정 파일 제외
 let g:netrw_list_hide= '^.*\.\(mp4\|mkv\|wmv\|m4a\|mp3\|flac\|zip\|rar\|exe\|com\|dll\|xls\|xlsx\|doc\|docx\|ppt\|pptx\|ods\)$'
 "let g:netrw_hide = 1
+
+set laststatus=2
+set statusline=%<%f\ %y%m%r%=%{&fenc}%{&bomb?'[BOM]':''}[%{&ff}]\ \ \ %-14.(%l,%c%V%)\ %P%{'\ '}
 
 "" ================================================================================
 ""
@@ -161,12 +166,12 @@ let s:TFont_JetBrains_Mono = [
             \[27,24, 2,0,100,100,0,0,"","JetBrains_Mono"],
             \]
 let s:TFont_Ubuntu_Mono = [
-            \[14,14, 2,0,100,100,0,0,"","Ubuntu_Mono"],
-            \[16,16, 1,0,100,100,0,0,"","Ubuntu_Mono"],
-            \[18,19, 4,0,100,100,0,0,"","Ubuntu_Mono"],
-            \[20,21, 7,0,100,100,0,0,"","Ubuntu_Mono"],
-            \[22,24, 4,0,100,100,0,0,"","Ubuntu_Mono"],
-            \[27,28, 5,0,100,100,0,0,"","Ubuntu_Mono"],
+            \[14,13.8, 3,0,100,100,0,0,"","Ubuntu_Mono"],
+            \[16,16,   1,0,100,100,0,0,"","Ubuntu_Mono"],
+            \[18,19,   4,0,100,100,0,0,"","Ubuntu_Mono"],
+            \[20,21,   7,0,100,100,0,0,"","Ubuntu_Mono"],
+            \[22,24,   4,0,100,100,0,0,"","Ubuntu_Mono"],
+            \[27,28,   5,0,100,100,0,0,"","Ubuntu_Mono"],
             \]
 let s:TFont_Blend = [
             \[14,11, 4,0,100,100,0,0,"","Hack"],
@@ -208,6 +213,7 @@ let s:EnFonts = [
 let s:KoFonts = [
             \[0,"------------------------------------------------------------"],
             \[1,["Poor_Story",["h",16,18,20,24,27,33]]],
+            \[1,["NIXGONFONTS-M_V2.0"]],
             \[1,["Pretendard_Variable"]],
             \[1,["Malgun_Gothic"]],
             \[1,["RIDIBatang"]],
@@ -380,7 +386,7 @@ let s:bLineBreak = 0
 let s:bCursorBlink = 1
 
 " 커서라인(수평라인) 사용(1), 사용안함(0)
-let s:bCursorLine = 1
+let s:bCursorLine = s:bGVim ? 1 : 0
 
 " 커서컬럼(수직라인)  사용(1), 사용안함(0)
 let s:bCursorColumn= 0
@@ -627,6 +633,7 @@ let s:bFullScreen = 0
 let s:bMaxmizedScreen = 0
 
 " 전체화면 상단 여백
+let s:bYpadding = 0
 let s:ypd = 0
 
 " 전체화면 영역 기본값
@@ -646,7 +653,7 @@ endfun
 
 " 전체화면 toggle
 fun GVimFullToggle()
-    if &ypadding != s:ypd
+    if s:bYpadding && &ypadding != s:ypd
         execute "set ypadding=" . s:ypd
     endif
     if s:bFullScreen
@@ -666,7 +673,7 @@ endfun
 
 " 전체화면 on or refresh
 fun GVimFullOn(sFull=s:sFull)
-    if &ypadding != s:ypd
+    if s:bYpadding && &ypadding != s:ypd
         execute "set ypadding=" . s:ypd
     endif
     if !s:bFullScreen && (s:bMenubarOn || s:bToolbarOn || s:bVertScrollbarOn)
@@ -694,7 +701,7 @@ endfun
 
 " 전체화면일 경우에만 Refresh
 fun GVimFullRefresh()
-    if &ypadding != s:ypd
+    if s:bYpadding && &ypadding != s:ypd
         execute "set ypadding=" . s:ypd
     endif
     if !s:bFullScreen
@@ -950,11 +957,11 @@ endfun
 
 fun KeymapEditNewLine()
     " Shift+Enter로 현재줄을 밑으로
-    nnoremap <silent> <S-CR> O
-    inoremap <silent> <S-CR> O
+    nnoremap <silent> <S-CR> O<ESC>
+    inoremap <silent> <S-CR> <ESC>O
     " Ctrl+Enter로 현재줄을 위로
-    nnoremap <silent> <C-CR> o
-    inoremap <silent> <C-CR> o
+    nnoremap <silent> <C-CR> o<ESC>
+    inoremap <silent> <C-CR> <ESC>o
 endfun
 
 fun KeymapNextOnePage()
@@ -1064,13 +1071,13 @@ fun NSplitOnly(n=s:nSplit)
         else
             if &number
                 if &foldcolumn
-                    let msg .= ":set foldcolumn=0\<CR>"
+                    let msg .= ":windo set foldcolumn=0\<CR>:wincmd w<CR>"
                 endif
                 if &cursorline
-                    let msg .= ":set nocursorline\<CR>"
+                    let msg .= ":windo set nocursorline\<CR>:wincmd w<CR>"
                 endif
                 if &relativenumber
-                    let msg .= ":set norelativenumber\<CR>"
+                    let msg .= ":windo set norelativenumber\<CR>:wincmd w<CR>"
                 endif
             endif
         endif
@@ -1092,16 +1099,17 @@ fun NSplitOnly(n=s:nSplit)
         let msg .= ":call Ry()\<CR>"
     endif
     silent! execute msg
-    if a:n < 2
-        if s:bCursorLine   && !&cursorline
-            set cursorline
-        endif
-        if s:bCursorColumn && !&cursorcolumn
-            set cursorcolumn
-        endif
-        if s:bRelativeNumber && !&relativenumber
-            set relativenumber
-        endif
+    if s:bCursorLine   && !&cursorline
+        windo set cursorline
+        wincmd w
+    endif
+    if s:bCursorColumn && !&cursorcolumn
+        windo set cursorcolumn
+        wincmd w
+    endif
+    if s:bRelativeNumber && !&relativenumber
+        windo set relativenumber
+        wincmd w
     endif
     redraw!
     call KeymapgNavigate(a:n)
@@ -1224,11 +1232,13 @@ fun SetFont(h1=14,h2=11,ln=3,ypd=0,weight1=0,weight2=0,w1=0,w2=0,f1=s:default_ko
         let s:msg_fonts[3] = a:ypd
     endif
 
-    if &ypadding != a:ypd
-        execute "set ypadding=" . a:ypd
-    endif
-    if l:bDy
-        let s:ypd = a:ypd
+    if s:bYpadding
+        if &ypadding != a:ypd
+            execute "set ypadding=" . a:ypd
+        endif
+        if l:bDy
+            let s:ypd = a:ypd
+        endif
     endif
 
     if l:bGfn
@@ -1365,13 +1375,13 @@ fun SetCursorOn()
     else
         call SetCursorStatic()
     endif
-    if NBuffers() == 1
-        if s:bCursorLine
-            set cursorline
-        endif
-        if s:bCursorColumn
-            set cursorcolumn
-        endif
+    if s:bCursorLine
+        windo set cursorline
+        wincmd w
+    endif
+    if s:bCursorColumn
+        windo set cursorcolumn
+        wincmd w
     endif
 endfun
 
@@ -1380,13 +1390,13 @@ fun SetCursorOff()
     if IsCursorOn()
         execute "set guicursor=" . s:sCursorOff
     endif
-    if NBuffers() == 1
-        if s:bCursorLine
-            set nocursorline
-        endif
-        if s:bCursorColumn
-            set nocursorcolumn
-        endif
+    if s:bCursorLine
+        windo set nocursorline
+        wincmd w
+    endif
+    if s:bCursorColumn
+        windo set nocursorcolumn
+        wincmd w
     endif
 endfun
 
@@ -1414,7 +1424,7 @@ fun WinSizePreset()
     execute "winsize" s:WinSizeColumnsLines[s:nFontSize][0] s:WinSizeColumnsLines[s:nFontSize][1]
 endfun
 
-" 전체 <--> 전체, 일반 <--> 일반
+" 폰트 크기 설정
 fun F101112(n=0)
     let nState = GVimState()
     let s:nFontSize = s:FontSize[a:n]
@@ -1662,14 +1672,14 @@ fun KeymapCommon()
     inoremap <silent> <M-F8> <ESC>:call ToggleFoldColumn()<CR>a
 
     " cursorline on/off
-    nnoremap <silent> <S-F8> <ESC>:set cursorline!<CR>
-    vnoremap <silent> <S-F8> <ESC>:set cursorline!<CR>
-    inoremap <silent> <S-F8> <ESC>:set cursorline!<CR>a
+    nnoremap <silent> <S-F8> <ESC>:windo set cursorline!<CR>:wincmd w<CR>
+    vnoremap <silent> <S-F8> <ESC>:windo set cursorline!<CR>:wincmd w<CR>
+    inoremap <silent> <S-F8> <ESC>:windo set cursorline!<CR>:wincmd w<CR>a
 
     " cursorcolumn on/off
-    nnoremap <silent> <C-F8> <ESC>:set cursorcolumn!<CR>
-    vnoremap <silent> <C-F8> <ESC>:set cursorcolumn!<CR>
-    inoremap <silent> <C-F8> <ESC>:set cursorcolumn!<CR>a
+    nnoremap <silent> <C-F8> <ESC>:windo set cursorcolumn!<CR>:wincmd w<CR>
+    vnoremap <silent> <C-F8> <ESC>:windo set cursorcolumn!<CR>:wincmd w<CR>
+    inoremap <silent> <C-F8> <ESC>:windo set cursorcolumn!<CR>:wincmd w<CR>a
 
     " 하이라이트 서치 off
     nnoremap <silent> <F9> <ESC>:nohlsearch<CR>
@@ -1809,7 +1819,7 @@ fun KeymapCommon()
 
     " INSERT 모드에서 Ctrl+Backspace로 단어 삭제
     inoremap <silent> <C-BS> <C-w>
-    cnoremap <C-BS> <C-w>
+    cnoremap <silent> <C-BS> <C-w>
 
     " 전체선택
     let @a = "GVgg"
@@ -1875,6 +1885,8 @@ fun AuVimEnter()
                 call GVimFullPartOn(s:nStartupFullRes)
             endif
         endif
+    else
+        hi! FoldColumn ctermbg=bg
     endif
 endfun
 

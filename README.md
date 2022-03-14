@@ -494,6 +494,8 @@ Vim 텍스트 뷰어에 포함된 폰트는 Open Font License, Ubuntu Font Licen
 - [고운 바탕 + 라이선스](https://fonts.google.com/specimen/Gowun+Batang?subset=korean)
 - [고운 돋움 + 라이선스](https://fonts.google.com/specimen/Gowun+Dodum?subset=korean)
 
+- [닉스곤 폰트 + 라이선스](http://www.nixgon.com/nixgon-fonts)
+
 - [B사감과 러브레터](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9002100&menuNo=200019)
 - [내마음 고요히 흐른 봄길 우에](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000343&menuNo=200019)
 - [동백꽃](https://gongu.copyright.or.kr/gongu/wrt/wrt/view.do?wrtSn=9000397&menuNo=200026)
